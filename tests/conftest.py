@@ -13,9 +13,9 @@ from nipoppy.tabular import Manifest, generate_curation_status_table
 from nipoppy.tabular.dicom_dir_map import DicomDirMap
 from nipoppy.workflows import InitWorkflow
 
-DPATH_DATA = Path(__file__).parent.parent / "data"
-DPATH_PIPELINES = DPATH_DATA / "pipelines"
-FPATH_CONFIG = DPATH_DATA / "global_config.json"
+DPATH_TESTS = Path(__file__).parent
+DPATH_PIPELINES = DPATH_TESTS.parent / "pipelines"
+FPATH_CONFIG = DPATH_TESTS / "data" / "global_config.json"
 
 PIPELINE_INFO_BY_TYPE: [PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = {
     PipelineTypeEnum.BIDSIFICATION: (
