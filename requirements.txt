@@ -1,0 +1,4 @@
+boutiques
+nipoppy
+pytest
+pytest_mock
