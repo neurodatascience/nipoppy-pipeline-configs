@@ -30,7 +30,7 @@ PIPELINE_INFO_BY_TYPE: [PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = {
         ("bidscoin", "4.3.2", "convert"),
     ),
     PipelineTypeEnum.PROCESSING: (
-        ("bids-validator", "2.0.3", "default"),
+        ("bids-validator", "2.0.3", "default"),  # no tracker
         ("freesurfer", "7.3.2", "default"),  # tracker only
         ("freesurfer", "6.0.1", "default"),  # tracker only
         ("fmriprep", "20.2.7", "default"),
