@@ -21,6 +21,11 @@ jobs:
     env:
       PYTHON_VERSION: 3.13
 
+    strategy:
+      matrix:
+        # test on latest release and dev version
+        nipoppy-pip-source: ["nipoppy", "git+https://github.com/nipoppy/nipoppy.git@main"]
+
     # only trigger on upstream repo
     if: github.repository == 'neurodatascience/nipoppy-pipeline-configs'
 
@@ -37,6 +42,7 @@ jobs:
       run: |
         pip install -U pip
         pip install -r requirements.txt
+        pip install ${{ matrix.nipoppy-pip-source }}
 
     - name: Run tests
       run: |
