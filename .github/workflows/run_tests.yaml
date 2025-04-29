@@ -22,7 +22,7 @@ jobs:
       PYTHON_VERSION: 3.13
 
     # only trigger on upstream repo
-    if: github.repository_owner == 'nipoppy' && github.event.repository.name == 'nipoppy-pipelines'
+    if: github.repository == 'neurodatascience/nipoppy-pipeline-configs'
 
     steps:
 
