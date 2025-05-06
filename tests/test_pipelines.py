@@ -39,14 +39,30 @@ def test_bids_pipeline_configs(fpath_config: Path):
 
 
 @pytest.mark.parametrize(
-    "fpath_invocation", DPATH_PIPELINES.glob("extraction/*/invocation.json")
+    "fpath_invocation", DPATH_PIPELINES.glob("extraction/*-*/invocation.json")
 )
-def test_extraction_invocations(fpath_invocation: Path):
+def test_extraction_invocation(fpath_invocation: Path):
     invocation = json.loads(fpath_invocation.read_text())
-    fpath_script = invocation['script_path']
-    fpath_script = fpath_script.replace("[[NIPOPPY_DPATH_PIPELINES]]", str(DPATH_PIPELINES))
+    fpath_script = invocation.get("script_path")
+    if fpath_script is None:
+        # check if they have a container config
+        fpath_config = fpath_invocation.parent / "config.json"
+        config = ExtractionPipelineConfig(**json.loads(fpath_config.read_text()))
+        if config.CONTAINER_INFO is not None:
+            pytest.xfail(
+                "No extraction script expected since pipeline uses a container"
+            )
+        else:
+            raise RuntimeError(
+                (
+                    "Expected script_path in invocation since the pipeline "
+                    f"doesn't use a container: {invocation}"
+                )
+            )
+    fpath_script = fpath_script.replace(
+        "[[NIPOPPY_DPATH_PIPELINES]]", str(DPATH_PIPELINES)
+    )
     assert Path(fpath_script).exists(), f"Extractor script not found: {fpath_script}"
-    
 
 
 @pytest.mark.parametrize(
