@@ -9,12 +9,14 @@
         {
             "NAME": "prepare",
             "INVOCATION_FILE": "invocation-[[STEP_NAME]].json",
-            "DESCRIPTOR_FILE": "descriptor.json"
+            "DESCRIPTOR_FILE": "descriptor.json",
+            "HPC_CONFIG_FILE": "hpc_config.json"
         },
         {
             "NAME": "convert",
             "INVOCATION_FILE": "invocation-[[STEP_NAME]].json",
             "DESCRIPTOR_FILE": "descriptor.json",
+            "HPC_CONFIG_FILE": "hpc_config.json",
             "CONTAINER_CONFIG": {
                 "ARGS": [
                     "--bind",
