@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from nipoppy.config.pipeline import BidsPipelineConfig
+from nipoppy.config.container import ContainerInfo
 from nipoppy.env import PipelineTypeEnum
 from nipoppy.utils import TEMPLATE_REPLACE_PATTERN
 from nipoppy.workflows import (
@@ -36,6 +37,33 @@ def test_bids_pipeline_configs(fpath_config: Path):
         f"BIDS pipeline {pipeline_config.NAME} {pipeline_config.VERSION}"
         f" should have exactly one step with UPDATE_STATUS=true (got {count})"
     )
+
+
+@pytest.mark.parametrize(
+    "fpath_invocation", DPATH_PIPELINES.glob("extraction/*-*/invocation.json")
+)
+def test_extraction_invocation(fpath_invocation: Path):
+    invocation = json.loads(fpath_invocation.read_text())
+    fpath_script = invocation.get("script_path")
+    if fpath_script is None:
+        # check if pipeline has a non-empty container info
+        fpath_config = fpath_invocation.parent / "config.json"
+        config = ExtractionPipelineConfig(**json.loads(fpath_config.read_text()))
+        if config.CONTAINER_INFO == ContainerInfo():
+            raise RuntimeError(
+                (
+                    "Expected script_path in invocation since the pipeline "
+                    f"doesn't use a container: {invocation}"
+                )
+            )
+        else:
+            pytest.xfail(
+                "No extraction script expected since pipeline uses a container"
+            )
+    fpath_script = fpath_script.replace(
+        "[[NIPOPPY_DPATH_PIPELINES]]", str(DPATH_PIPELINES)
+    )
+    assert Path(fpath_script).exists(), f"Extractor script not found: {fpath_script}"
 
 
 @pytest.mark.parametrize(
