@@ -16,6 +16,7 @@
             "NAME": "convert",
             "INVOCATION_FILE": "invocation-[[STEP_NAME]].json",
             "DESCRIPTOR_FILE": "descriptor-dcm2bids.json",
+            "HPC_CONFIG_FILE": "hpc.json",
             "CONTAINER_CONFIG": {
                 "ARGS": [
                     "--bind",
