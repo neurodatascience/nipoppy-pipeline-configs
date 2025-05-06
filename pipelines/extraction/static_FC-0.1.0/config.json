@@ -10,7 +10,8 @@
     "STEPS": [
         {
             "INVOCATION_FILE": "invocation.json",
-            "DESCRIPTOR_FILE": "descriptor.json"
+            "DESCRIPTOR_FILE": "descriptor.json",
+            "HPC_CONFIG_FILE": "hpc.json"
         }
     ],
     "PIPELINE_TYPE": "extraction",

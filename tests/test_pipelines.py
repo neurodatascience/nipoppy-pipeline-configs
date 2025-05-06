@@ -20,14 +20,14 @@ from nipoppy.workflows import (
 from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
 
 
-@pytest.mark.parametrize("dpath_pipeline", DPATH_PIPELINES.glob("*/*"))
+@pytest.mark.parametrize("dpath_pipeline", DPATH_PIPELINES.glob("*/*-*"))
 def test_nipoppy_pipeline_validate(dpath_pipeline: Path):
     """Test that pipeline bundles in the repo are valid."""
     PipelineValidateWorkflow(dpath_pipeline).run()
 
 
 @pytest.mark.parametrize(
-    "fpath_config", DPATH_PIPELINES.glob("bidsification/*/config.json")
+    "fpath_config", DPATH_PIPELINES.glob("bidsification/*-*/config.json")
 )
 def test_bids_pipeline_configs(fpath_config: Path):
     pipeline_config = BidsPipelineConfig(**json.loads(fpath_config.read_text()))
