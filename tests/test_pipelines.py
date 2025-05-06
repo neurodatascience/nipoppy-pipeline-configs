@@ -39,6 +39,17 @@ def test_bids_pipeline_configs(fpath_config: Path):
 
 
 @pytest.mark.parametrize(
+    "fpath_invocation", DPATH_PIPELINES.glob("extraction/*/invocation.json")
+)
+def test_extraction_invocations(fpath_invocation: Path):
+    invocation = json.loads(fpath_invocation.read_text())
+    fpath_script = invocation['script_path']
+    fpath_script = fpath_script.replace("[[NIPOPPY_DPATH_PIPELINES]]", str(DPATH_PIPELINES))
+    assert Path(fpath_script).exists(), f"Extractor script not found: {fpath_script}"
+    
+
+
+@pytest.mark.parametrize(
     "pipeline_info,pipeline_type",
     PIPELINE_INFO_AND_TYPE,
 )
