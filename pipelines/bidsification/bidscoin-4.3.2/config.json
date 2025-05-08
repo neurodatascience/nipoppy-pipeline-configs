@@ -18,8 +18,7 @@
             "NAME": "convert",
             "INVOCATION_FILE": "invocation-[[STEP_NAME]].json",
             "DESCRIPTOR_FILE": "descriptor-bidscoiner.json",
-            "ANALYSIS_LEVEL": "participant",
-            "UPDATE_STATUS": true
+            "ANALYSIS_LEVEL": "participant"
         }
     ],
     "PIPELINE_TYPE": "bidsification",
