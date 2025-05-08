@@ -8,6 +8,7 @@ import pytest
 
 from nipoppy.config.pipeline import BidsPipelineConfig
 from nipoppy.env import PipelineTypeEnum
+from nipoppy.layout import DatasetLayout
 from nipoppy.utils import TEMPLATE_REPLACE_PATTERN
 from nipoppy.workflows import (
     PipelineValidateWorkflow,
@@ -31,6 +32,16 @@ def test_nipoppy_pipeline_validate(dpath_pipeline: Path):
 )
 def test_bids_pipeline_configs(fpath_config: Path):
     pipeline_config = BidsPipelineConfig(**json.loads(fpath_config.read_text()))
+    if not any(
+        [step.ANALYSIS_LEVEL == "participant_session" for step in pipeline_config.STEPS]
+    ):
+        pytest.xfail(
+            (
+                "UPDATE_STATUS cannot be enabled because no steps are at "
+                f"participant-session level for pipeline {pipeline_config.NAME}"
+                f" {pipeline_config.VERSION}"
+            )
+        )
     count = sum([step.UPDATE_STATUS for step in pipeline_config.STEPS])
     assert count == 1, (
         f"BIDS pipeline {pipeline_config.NAME} {pipeline_config.VERSION}"
