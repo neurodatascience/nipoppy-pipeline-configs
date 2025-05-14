@@ -1,0 +1,384 @@
+{
+	"name": "qsirecon",
+	"description": "qsirecon",
+	"tool-version": "1.1.0",
+	"schema-version": "0.5",
+  "command-line": "[[NIPOPPY_CONTAINER_COMMAND]] [[NIPOPPY_FPATH_CONTAINER]] [INPUT_DIR] [OUTPUT_DIR] [ANALYSIS_LEVEL] [PARTICIPANT_LABEL] [SESSION_LABEL] [BIDS_FILTER_FILE] [BIDS_DATABASE_DIR] [NPROCS] [OMP_NTHREADS] [MEM] [LOW_MEM] [USE_PLUGIN] [SLOPPY] [BOILERPLATE_ONLY] [REPORTS_ONLY] [REPORTS_OUTPUT_LEVEL] [INFANT] [PACKAGE] [B0_THRESHOLD] [OUTPUT_RESOLUTION] [RECON_SPEC] [INPUT_TYPE] [FS_SUBJECTS_DIR] [SKIP_ODF_REPORTS] [ATLASES] [FS_LICENSE_FILE] [VERSION] [VERBOSE_COUNT] [WORK_DIR] [RESOURCE_MONITOR] [CONFIG_FILE] [WRITE_GRAPH] [STOP_ON_FIRST_CRASH] [NOTRACK] [DEBUG]",
+	"inputs": [
+	  {
+			"name": "input_dir",
+			"id": "input_dir",
+			"description": "The root folder of a input dataset. sub-* level folders should be here. If BIDS valid dataset (sub-XXXXX folders should be found at the top level in this folder).",
+			"type": "String",
+			"optional": false,
+			"value-key": "[INPUT_DIR]"
+		},
+		{
+			"name": "output_dir",
+			"id": "output_dir",
+			"description": "The output path for the outcomes of preprocessing and visual reports",
+			"type": "String",
+			"optional": false,
+			"value-key": "[OUTPUT_DIR]"
+		},
+		{
+			"name": "analysis_level",
+			"id": "analysis_level",
+			"description": "Processing stage to be run, only \"participant\" in the case of QSIPrep (for now).",
+			"type": "String",
+			"optional": false,
+			"value-key": "[ANALYSIS_LEVEL]",
+			"value-choices": [
+				"participant"
+			]
+		},
+		{
+			"name": "participant_label",
+			"id": "participant_label",
+			"description": "A space delimited list of participant identifiers or a single identifier (the sub- prefix can be removed)",
+			"type": "String",
+			"list": true,
+			"optional": true,
+			"command-line-flag": "--participant-label",
+			"value-key": "[PARTICIPANT_LABEL]"
+		},
+		{
+			"name": "session_label",
+			"id": "session_label",
+			"description": "A space delimited list of session identifiers or a single identifier (the ses- prefix can be removed)",
+			"type": "String",
+			"list": true,
+			"optional": true,
+			"command-line-flag": "--session-id",
+			"value-key": "[SESSION_LABEL]"
+		},
+		{
+			"name": "bids_filter_file",
+			"id": "bids_filter_file",
+			"description": "A JSON file describing custom BIDS input filters using PyBIDS. For further details, please check out https://fmriprep.readthedocs.io/en/0.23.0/faq.html#how-do-I-select-only-certain-files-to-be-input-to-fMRIPrep",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "--bids-filter-file",
+			"value-key": "[BIDS_FILTER_FILE]"
+		},
+		{
+			"name": "bids_database_dir",
+			"id": "bids_database_dir",
+			"description": "Path to a PyBIDS database folder, for faster indexing (especially useful for large datasets). Will be created if not present.",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "--bids-database-dir",
+			"value-key": "[BIDS_DATABASE_DIR]"
+		},
+		{
+			"name": "nprocs",
+			"id": "nprocs",
+			"description": "Maximum number of threads across all processes",
+			"type": "Number",
+			"optional": true,
+			"command-line-flag": "--nprocs",
+			"value-key": "[NPROCS]"
+		},
+		{
+			"name": "omp_nthreads",
+			"id": "omp_nthreads",
+			"description": "Maximum number of threads per-process",
+			"type": "Number",
+			"optional": true,
+			"command-line-flag": "--omp-nthreads",
+			"value-key": "[OMP_NTHREADS]"
+		},
+		{
+			"name": "mem",
+			"id": "mem",
+			"description": "Upper bound memory limit for QSIPrep processes",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "--mem",
+			"value-key": "[MEM]"
+		},
+		{
+			"name": "low_mem",
+			"id": "low_mem",
+			"description": "Attempt to reduce memory usage (will increase disk usage in working directory)",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--low-mem",
+			"value-key": "[LOW_MEM]"
+		},
+		{
+			"name": "use_plugin",
+			"id": "use_plugin",
+			"description": "Nipype plugin configuration file",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "--use-plugin",
+			"value-key": "[USE_PLUGIN]"
+		},
+		{
+			"name": "sloppy",
+			"id": "sloppy",
+			"description": "Use low-quality tools for speed - TESTING ONLY",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--sloppy",
+			"value-key": "[SLOPPY]"
+		},
+		{
+			"name": "boilerplate_only",
+			"id": "boilerplate_only",
+			"description": "Generate boilerplate only",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--boilerplate-only",
+			"value-key": "[BOILERPLATE_ONLY]"
+		},
+		{
+			"name": "reports_only",
+			"id": "reports_only",
+			"description": "Only generate reports, don't run workflows. This will only rerun report aggregation, not reportlet generation for specific nodes.",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--reports-only",
+			"value-key": "[REPORTS_ONLY]"
+		},
+		{
+			"name": "reports_output_level",
+			"id": "reports_output_level",
+			"description": "Where should the html reports be writen? By default 'root' will write them ot the --output-dir. Other options will write them to subject or session directory",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "--reports-output-level",
+			"value-key": "[REPORTS_OUTPUT_LEVEL]",
+			"value-choices": [
+				"root",
+				"subject",
+				"session"
+			]
+		},
+		{
+			"name": "infant",
+			"id": "infant",
+			"description": "configure pipelines to process infant brains.",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--infant",
+			"value-key": "[INFANT]"
+		},
+		{
+			"name": "package",
+			"id": "package",
+			"description": "Search PATH(s) for derivatives or atlas datasets. These may be provided as named folders (eg ``--datasets smriprep=/path/to/smriprep``).",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "-d",
+			"value-key": "[PACKAGE]"
+		},
+		{
+			"name": "b0_threshold",
+			"id": "b0_threshold",
+			"description": "any value in the .bval file less than this will be considered a b=0 image. Current default threshold = 100; this threshold can be lowered or increased. Note, setting this too high can result in inaccurate results.",
+			"type": "Number",
+			"optional": true,
+			"default-value": 100,
+			"command-line-flag": "--b0-threshold",
+			"value-key": "[B0_THRESHOLD]"
+		},
+		{
+			"name": "output_resolution",
+			"id": "output_resolution",
+			"description": "the isotropic voxel size in mm the data will be resampled to after preprocessing. If set to a lower value than the original voxel size, your data will be upsampled using BSpline interpolation.",
+			"type": "Number",
+			"optional": false,
+			"command-line-flag": "--output-resolution",
+			"value-key": "[OUTPUT_RESOLUTION]"
+		},
+		{
+			"name": "fs_license_file",
+			"id": "fs_license_file",
+			"description": "Path to FreeSurfer license key file. Get it (for free) by registering at https://surfer.nmr.mgh.harvard.edu/registration.html",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "--fs-license-file",
+			"value-key": "[FS_LICENSE_FILE]"
+		},
+		{
+			"name": "recon_spec",
+			"id": "recon_spec",
+			"description": "json file specifying a reconstruction pipeline to be run after preprocessing.",
+			"type": "String",
+			"optional": false,
+			"command-line-flag": "--recon-spec",
+			"value-key": "[RECON_SPEC]",
+			"value-choices": [
+				 "amico_noddi",
+				 "csdsi_3dshore",
+				 "dipy_3dshore",
+				 "dipy_dki",
+				 "dipy_mapmri",
+				 "dsi_studio_auto_track",
+				 "dsi_studio_gqi",
+				 "hbcd_scalar_maps",
+				 "mrtrix_multishell_msmt_ACT-fast",
+				 "mrtrix_multishell_msmt_ACT-hsvs",
+				 "mrtrix_multishell_msmt_noACT",
+				 "mrtrix_multishell_msmt_pyafq_tractometry",
+				 "mrtrix_singleshell_ss3t_ACT-fast",
+				 "mrtrix_singleshell_ss3t_ACT-hsvs",
+				 "mrtrix_singleshell_ss3t_noACT",
+				 "multishell_scalarfest",
+				 "pyafq_tractometry",
+				 "reorient_fslstd",
+				 "ss3t_fod_autotrack",
+				 "test_scalar_maps",
+				 "test_workflow",
+				 "TORTOISE"
+			]
+		},
+		{
+			"name": "input_type",
+			"id": "input_type",
+			"description": "Specify the pipeline that was used to create the specified input_dir.",
+			"type": "String",
+			"optional": false,
+			"command-line-flag": "--input-type",
+			"value-key": "[INPUT_TYPE]",
+			"value-choices": [
+				 "qsiprep",
+				 "ukb",
+				 "hcpya"
+			]
+		},
+		{
+			"name": "fs_subjects_dir",
+			"id": "fs_subjects_dir",
+			"description": "Directory containing FreeSurfer outputs. FreeSurfer must already be run.",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "--fs-subjects-dir",
+			"value-key": "[FS_SUBJECTS_DIR]"
+		},
+		{
+			"name": "skip_odf_reports",
+			"id": "skip_odf_reports",
+			"description": "Only run ODF reconstruction. Assumes preprocessing reports are already complete.",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--skip-odf-reports",
+			"value-key": "[SKIP_ODF_REPORTS]"
+		},
+		{
+			"name": "atlases",
+			"id": "atlases",
+			"description": "Atlas to be applied to data",
+			"type": "String",
+			"list": true,
+			"optional": true,
+			"command-line-flag": "--atlases",
+			"value-key": "[ATLASES]",
+			"value-choices": [
+				"AAL116",
+				"AICHA384Ext",
+				"Brainnetome246Ext",
+				"Gordon333Ext",
+				"4S"
+			]
+		},
+		{
+			"name": "version",
+			"id": "version",
+			"description": "show program's version number and exit",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--version",
+			"value-key": "[VERSION]"
+		},
+		{
+			"name": "verbose_count",
+			"id": "verbose_count",
+			"description": "Increases log verbosity for each occurrence, debug level is -vvv",
+			"type": "String",
+			"optional": true,
+			"value-key": "[VERBOSE_COUNT]",
+			"value-choices": [
+				"-v",
+				"-vv",
+				"-vvv"
+			]
+		},
+		{
+			"name": "work_dir",
+			"id": "work_dir",
+			"description": "Path where intermediate results should be stored",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "-w",
+			"value-key": "[WORK_DIR]"
+		},
+		{
+			"name": "resource_monitor",
+			"id": "resource_monitor",
+			"description": "Enable Nipype's resource monitoring to keep track of memory and CPU usage",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--resource-monitor",
+			"value-key": "[RESOURCE_MONITOR]"
+		},
+		{
+			"name": "config_file",
+			"id": "config_file",
+			"description": "Use pre-generated configuration file. Values in file will be overridden by command-line arguments.",
+			"type": "String",
+			"optional": true,
+			"command-line-flag": "--config-file",
+			"value-key": "[CONFIG_FILE]"
+		},
+		{
+			"name": "write_graph",
+			"id": "write_graph",
+			"description": "Write workflow graph.",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--write-graph",
+			"value-key": "[WRITE_GRAPH]"
+		},
+		{
+			"name": "stop_on_first_crash",
+			"id": "stop_on_first_crash",
+			"description": "Force stopping on first crash, even if a work directory was specified.",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--stop-on-first-crash",
+			"value-key": "[STOP_ON_FIRST_CRASH]"
+		},
+		{
+			"name": "notrack",
+			"id": "notrack",
+			"description": "Opt-out of sending tracking information of this run to the QSIPrep developers. This information helps to improve QSIPrep and provides an indicator of real world usage crucial for obtaining funding.",
+			"type": "Flag",
+			"optional": true,
+			"command-line-flag": "--notrack",
+			"value-key": "[NOTRACK]"
+		},
+		{
+			"name": "debug",
+			"id": "debug",
+			"description": "Debug mode(s) to enable. 'all' is alias for all available modes.",
+			"type": "String",
+			"list": true,
+			"optional": true,
+			"command-line-flag": "--debug",
+			"value-key": "[DEBUG]",
+			"value-choices": [
+				"pdb",
+				"all"
+			]
+		}
+	],
+	"tags": {},
+	"suggested-resources": {
+		"cpu-cores": 8,
+		"ram": 16,
+		"walltime-estimate": 120
+	}
+ }
