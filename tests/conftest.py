@@ -42,7 +42,7 @@ PIPELINE_INFO_BY_TYPE: [PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = {
     PipelineTypeEnum.EXTRACTION: (
         ("fs_stats", "0.2.1", "default"),
         ("static_FC", "0.1.0", "default"),
-        ("dmri_freewater", "1.0.0", "default")
+        ("dmri_freewater", "2.0.0", "default")
     ),
 }
 
