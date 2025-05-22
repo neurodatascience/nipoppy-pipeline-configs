@@ -1,0 +1,13 @@
+{
+	"title": "dmri-freewater-2.0.0",
+  "description": "Estimate freewater corrected (fwDTI) and regular diffusion models with common parameter maps.",
+	"creators": [
+		{
+			"person_or_org": {
+				"given_name": "Brent",
+				"family_name": "McPherson",
+				"type": "personal"
+			}
+		}
+	]
+}
