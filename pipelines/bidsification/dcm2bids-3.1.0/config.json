@@ -11,7 +11,13 @@
             "INVOCATION_FILE": "invocation-[[STEP_NAME]].json",
             "DESCRIPTOR_FILE": "descriptor-dcm2bids_helper.json",
             "HPC_CONFIG_FILE": "hpc.json",
-            "ANALYSIS_LEVEL": "group"
+            "ANALYSIS_LEVEL": "group",
+            "CONTAINER_CONFIG": {
+                "ARGS": [
+                    "--bind",
+                    "[[NIPOPPY_DPATH_SCRATCH]]/dcm2bids_helper"
+                ]
+            }
         },
         {
             "NAME": "convert",
