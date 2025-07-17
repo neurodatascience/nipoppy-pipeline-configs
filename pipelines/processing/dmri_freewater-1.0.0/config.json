@@ -1,27 +1,27 @@
 {
-	"NAME": "dmri_freewater",
-	"VERSION": "1.0.0",
-	"CONTAINER_INFO": {
-		"FILE": "[[NIPOPPY_DPATH_CONTAINERS]]/[[PIPELINE_NAME]]_[[PIPELINE_VERSION]].sif",
-		"URI": "docker://bcmcpher/[[PIPELINE_NAME]]:[[PIPELINE_VERSION]]"
-	},
-	"CONTAINER_CONFIG": {
-		"ENV_VARS": {
-			"PYTHONUNBUFFERED": "1"
-		}
-	},
-	"PROC_DEPENDENCIES": [
-		{
-			"NAME": "qsiprep",
-			"VERSION": "0.23.0"
-		}
-	],
-	"STEPS": [
-		{
-			"INVOCATION_FILE": "invocation.json",
-			"DESCRIPTOR_FILE": "descriptor.json"
-		}
-	],
-	"PIPELINE_TYPE": "extraction",
-	"SCHEMA_VERSION": "1"
+    "NAME": "dmri_freewater",
+    "VERSION": "1.0.0",
+    "CONTAINER_INFO": {
+        "FILE": "[[NIPOPPY_DPATH_CONTAINERS]]/[[PIPELINE_NAME]]_[[PIPELINE_VERSION]].sif",
+        "URI": "docker://bcmcpher/[[PIPELINE_NAME]]:[[PIPELINE_VERSION]]"
+    },
+    "CONTAINER_CONFIG": {
+        "ENV_VARS": {
+            "PYTHONUNBUFFERED": "1"
+        }
+    },
+    "PROC_DEPENDENCIES": [
+        {
+            "NAME": "qsiprep",
+            "VERSION": "0.23.0"
+        }
+    ],
+    "STEPS": [
+        {
+            "INVOCATION_FILE": "invocation.json",
+            "DESCRIPTOR_FILE": "descriptor.json"
+        }
+    ],
+    "PIPELINE_TYPE": "extraction",
+    "SCHEMA_VERSION": "1"
 }
