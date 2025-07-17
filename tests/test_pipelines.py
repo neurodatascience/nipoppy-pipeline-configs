@@ -5,37 +5,74 @@ import warnings
 from pathlib import Path
 
 import pytest
-
-from nipoppy.config.pipeline import BidsPipelineConfig
+from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
+from nipoppy.config.container import ContainerInfo
+from nipoppy.config.pipeline import BidsPipelineConfig, ExtractionPipelineConfig
 from nipoppy.env import PipelineTypeEnum
+from nipoppy.layout import DatasetLayout
 from nipoppy.utils import TEMPLATE_REPLACE_PATTERN
 from nipoppy.workflows import (
-    PipelineValidateWorkflow,
     BidsConversionRunner,
     ExtractionRunner,
     PipelineRunner,
     PipelineTracker,
+    PipelineValidateWorkflow,
 )
 
-from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
 
-
-@pytest.mark.parametrize("dpath_pipeline", DPATH_PIPELINES.glob("*/*"))
+@pytest.mark.parametrize("dpath_pipeline", DPATH_PIPELINES.glob("*/*-*"))
 def test_nipoppy_pipeline_validate(dpath_pipeline: Path):
     """Test that pipeline bundles in the repo are valid."""
     PipelineValidateWorkflow(dpath_pipeline).run()
 
 
 @pytest.mark.parametrize(
-    "fpath_config", DPATH_PIPELINES.glob("bidsification/*/config.json")
+    "fpath_config", DPATH_PIPELINES.glob("bidsification/*-*/config.json")
 )
 def test_bids_pipeline_configs(fpath_config: Path):
     pipeline_config = BidsPipelineConfig(**json.loads(fpath_config.read_text()))
+    if not any(
+        [step.ANALYSIS_LEVEL == "participant_session" for step in pipeline_config.STEPS]
+    ):
+        pytest.xfail(
+            (
+                "UPDATE_STATUS cannot be enabled because no steps are at "
+                f"participant-session level for pipeline {pipeline_config.NAME}"
+                f" {pipeline_config.VERSION}"
+            )
+        )
     count = sum([step.UPDATE_STATUS for step in pipeline_config.STEPS])
     assert count == 1, (
         f"BIDS pipeline {pipeline_config.NAME} {pipeline_config.VERSION}"
         f" should have exactly one step with UPDATE_STATUS=true (got {count})"
     )
+
+
+@pytest.mark.parametrize(
+    "fpath_invocation", DPATH_PIPELINES.glob("extraction/*-*/invocation.json")
+)
+def test_extraction_invocation(fpath_invocation: Path):
+    invocation = json.loads(fpath_invocation.read_text())
+    fpath_script = invocation.get("script_path")
+    if fpath_script is None:
+        # check if pipeline has a non-empty container info
+        fpath_config = fpath_invocation.parent / "config.json"
+        config = ExtractionPipelineConfig(**json.loads(fpath_config.read_text()))
+        if config.CONTAINER_INFO == ContainerInfo():
+            raise RuntimeError(
+                (
+                    "Expected script_path in invocation since the pipeline "
+                    f"doesn't use a container: {invocation}"
+                )
+            )
+        else:
+            pytest.xfail(
+                "No extraction script expected since pipeline uses a container"
+            )
+    fpath_script = fpath_script.replace(
+        "[[NIPOPPY_DPATH_PIPELINES]]", str(DPATH_PIPELINES)
+    )
+    assert Path(fpath_script).exists(), f"Extractor script not found: {fpath_script}"
 
 
 @pytest.mark.parametrize(

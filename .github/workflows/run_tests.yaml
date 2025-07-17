@@ -6,6 +6,10 @@ on:
     branches: ['*']
   pull_request:
     branches: ['*']
+  schedule:
+    - cron: "18 8 * * *"
+  workflow_dispatch:
+
 
 # cancel previous runs if new one is triggered
 concurrency:
