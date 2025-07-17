@@ -1,3 +1,5 @@
+"""Global variables and fixtures for tests."""
+
 import itertools
 import shutil
 from pathlib import Path
@@ -5,19 +7,17 @@ from typing import Iterable, Tuple
 
 import pytest
 import pytest_mock
-
-from nipoppy.env import PipelineTypeEnum
 from nipoppy.config import Config
+from nipoppy.env import PipelineTypeEnum
 from nipoppy.layout import DatasetLayout
-from nipoppy.tabular import Manifest, generate_curation_status_table
-from nipoppy.tabular.dicom_dir_map import DicomDirMap
+from nipoppy.tabular import Manifest
 from nipoppy.workflows import InitWorkflow
 
 DPATH_TESTS = Path(__file__).parent
 DPATH_PIPELINES = DPATH_TESTS.parent / "pipelines"
 FPATH_CONFIG = DPATH_TESTS / "data" / "global_config.json"
 
-PIPELINE_INFO_BY_TYPE: [PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = {
+PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = {
     PipelineTypeEnum.BIDSIFICATION: (
         ("heudiconv", "0.12.2", "prepare"),
         ("heudiconv", "0.12.2", "convert"),
@@ -57,6 +57,7 @@ PIPELINE_INFO_AND_TYPE: list[Tuple[Tuple[str, str, str], PipelineTypeEnum]] = (
 def single_subject_dataset(
     tmp_path: Path, mocker: pytest_mock.MockerFixture
 ) -> DatasetLayout:
+    """Create dummy dataset with pipelines installed."""
     dataset_root = tmp_path / "my_dataset"
     participant_id = "01"
     session_id = "01"
@@ -67,8 +68,6 @@ def single_subject_dataset(
         "[[FREESURFER_LICENSE_FILE]]": str(tmp_path / "freesurfer_license.txt"),
         "[[TEMPLATEFLOW_HOME]]": str(tmp_path / "templateflow"),
     }
-
-    participants_and_sessions = {participant_id: [session_id]}
 
     # create dataset structure
     workflow = InitWorkflow(dpath_root=dataset_root)
@@ -96,13 +95,6 @@ def single_subject_dataset(
         }
     )
     manifest.save_with_backup(layout.fpath_manifest)
-    curation_status_table = generate_curation_status_table(
-        manifest,
-        DicomDirMap.load_or_generate(
-            manifest, fpath_dicom_dir_map=None, participant_first=True
-        ),
-    )
-    curation_status_table.save_with_backup(layout.fpath_curation_status)
 
     # patch so that the test runs even if the command is not available
     mocker.patch(

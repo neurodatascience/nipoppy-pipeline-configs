@@ -5,21 +5,19 @@ import warnings
 from pathlib import Path
 
 import pytest
-
-from nipoppy.config.pipeline import BidsPipelineConfig
+from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
 from nipoppy.config.container import ContainerInfo
+from nipoppy.config.pipeline import BidsPipelineConfig, ExtractionPipelineConfig
 from nipoppy.env import PipelineTypeEnum
 from nipoppy.layout import DatasetLayout
 from nipoppy.utils import TEMPLATE_REPLACE_PATTERN
 from nipoppy.workflows import (
-    PipelineValidateWorkflow,
     BidsConversionRunner,
     ExtractionRunner,
     PipelineRunner,
     PipelineTracker,
+    PipelineValidateWorkflow,
 )
-
-from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
 
 
 @pytest.mark.parametrize("dpath_pipeline", DPATH_PIPELINES.glob("*/*-*"))
