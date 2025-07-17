@@ -2,13 +2,9 @@
 exclude =
     .git,
     __pycache__,
-    build,
-    dist,
-	env,
-	venv,
 per-file-ignores =
     # - docstrings rules that should not be applied to tests
-	tests/test_*.py: D100, D101, D103
+    tests/test_*.py: D100, D101, D103
 docstring-convention = numpy
 max_complexity = 12
 max_function_length = 150
