@@ -8,6 +8,7 @@
         "image": "nipy/heudiconv:0.12.2",
         "type": "docker"
     },
+    "shell": "/bin/bash",
     "inputs": [
         {
             "name": "version",
