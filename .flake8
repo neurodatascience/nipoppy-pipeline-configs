@@ -1,0 +1,12 @@
+[flake8]
+exclude =
+    .git,
+    __pycache__,
+per-file-ignores =
+    # - docstrings rules that should not be applied to tests
+    tests/test_*.py: D100, D101, D103
+docstring-convention = numpy
+max_complexity = 12
+max_function_length = 150
+max-line-length = 88
+extend-ignore = D105, E203, E704
