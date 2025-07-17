@@ -13,7 +13,9 @@
         "schaefer_1000"
     ],
     "confound_strategy": "simple",
-    "list_of_FC_metrics": ["correlation"],
+    "list_of_FC_metrics": [
+        "correlation"
+    ],
     "path_to_dkt_file": "SPECIFY_IF_USING_DKT_ATLAS",
     "space": "MNI152NLin2009cAsym_res-2"
 }

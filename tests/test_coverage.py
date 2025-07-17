@@ -4,10 +4,8 @@ import json
 from pathlib import Path
 
 import pytest
-
-from nipoppy.config.pipeline import BasePipelineConfig
-
 from conftest import DPATH_PIPELINES, PIPELINE_INFO_BY_TYPE
+from nipoppy.config.pipeline import BasePipelineConfig
 
 
 @pytest.mark.parametrize("fpath_config", DPATH_PIPELINES.glob("*/*-*/config.json"))
