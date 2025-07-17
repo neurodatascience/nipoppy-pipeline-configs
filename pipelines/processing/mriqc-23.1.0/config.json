@@ -18,7 +18,8 @@
         {
             "INVOCATION_FILE": "invocation.json",
             "DESCRIPTOR_FILE": "descriptor.json",
-            "TRACKER_CONFIG_FILE": "tracker_config.json"
+            "HPC_CONFIG_FILE": "hpc.json",
+            "TRACKER_CONFIG_FILE": "tracker.json"
         }
     ],
     "VARIABLES": {

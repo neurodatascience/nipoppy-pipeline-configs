@@ -85,7 +85,9 @@
             "type": "String",
             "list": true,
             "optional": true,
-            "default-value": ["correlation"],
+            "default-value": [
+                "correlation"
+            ],
             "command-line-flag": "--metric_list",
             "value-key": "[FC_METRICS_LIST]",
             "value-choices": [
