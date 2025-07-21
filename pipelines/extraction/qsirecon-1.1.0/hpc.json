@@ -1,7 +1,7 @@
 {
-	"ACCOUNT": "[[HPC_ACCOUNT_NAME]]",
-	"TIME": "04:00:00",
-	"CORES": "4",
-	"MEMORY": "16G",
-	"ARRAY_CONCURRENCY_LIMIT": ""
+    "ACCOUNT": "[[HPC_ACCOUNT_NAME]]",
+    "TIME": "04:00:00",
+    "CORES": "4",
+    "MEMORY": "16G",
+    "ARRAY_CONCURRENCY_LIMIT": ""
 }
