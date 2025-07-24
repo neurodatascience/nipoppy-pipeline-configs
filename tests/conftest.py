@@ -32,6 +32,7 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
     PipelineTypeEnum.PROCESSING: (
         ("bids-validator", "2.0.3", "default"),  # no tracker
         ("freesurfer", "7.3.2", "default"),  # tracker only
+        ("dmri-freewater", "2.0.0", "default"),
         ("freesurfer", "6.0.1", "default"),  # tracker only
         ("fmriprep", "20.2.7", "default"),
         ("fmriprep", "23.1.3", "default"),
@@ -41,8 +42,8 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
     ),
     PipelineTypeEnum.EXTRACTION: (
         ("fs_stats", "0.2.1", "default"),
-        ("static_FC", "0.1.0", "default"),
         ("qsirecon", "1.1.0", "default"),
+        ("static_FC", "0.1.0", "default"),
     ),
 }
 

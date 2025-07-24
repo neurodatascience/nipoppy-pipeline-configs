@@ -33,5 +33,5 @@ repos:
     rev: v2.4.1
     hooks:
     -   id: codespell
-        args: [--skip=.git,.github]
+        args: ["--skip=.git,.github,**/qsirecon-1.1.0/descriptor.json"]
         additional_dependencies: [tomli]
