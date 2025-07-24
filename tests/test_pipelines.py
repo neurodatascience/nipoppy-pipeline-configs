@@ -37,6 +37,54 @@ def pipeline_variables(tmp_path: Path) -> dict[str, str]:
     }
 
 
+def _install_pipeline(
+    layout: DatasetLayout,
+    pipeline_name: str,
+    pipeline_version: str,
+    monkeypatch: pytest.MonkeyPatch,
+    pipeline_variables: dict[str, str] = None,
+    pipeline_type: PipelineTypeEnum = PipelineTypeEnum.PROCESSING,
+):
+    if pipeline_variables is None:
+        pipeline_variables = {}
+
+    fpath_pipeline = (
+        DPATH_PIPELINES / pipeline_type.value / f"{pipeline_name}-{pipeline_version}"
+    )
+    paths_to_install = [fpath_pipeline]
+    if pipeline_type == PipelineTypeEnum.EXTRACTION:
+        pipeline_config = ExtractionPipelineConfig(
+            **json.loads((fpath_pipeline / "config.json").read_text())
+        )
+        for info in pipeline_config.PROC_DEPENDENCIES:
+            paths_to_install.append(
+                DPATH_PIPELINES
+                / PipelineTypeEnum.PROCESSING.value
+                / f"{info.NAME}-{info.VERSION}"
+            )
+    for path in paths_to_install:
+        monkeypatch.setattr("sys.stdin", io.StringIO("n"))  # do not install container
+        installer = PipelineInstallWorkflow(dpath_root=layout.dpath_root, source=path)
+        installer.run()
+
+    # set pipeline variables
+    config = Config.load(layout.fpath_config)
+    variables_to_set = {
+        variable: value
+        for variable, value in pipeline_variables.items()
+        if (
+            variable
+            in config.PIPELINE_VARIABLES.get_variables(
+                pipeline_type, pipeline_name, pipeline_version
+            )
+        )
+    }
+    config.PIPELINE_VARIABLES.set_variables(
+        pipeline_type, pipeline_name, pipeline_version, variables_to_set
+    )
+    config.save(layout.fpath_config)
+
+
 @pytest.mark.parametrize("dpath_pipeline", DPATH_PIPELINES.glob("*/*-*"))
 def test_nipoppy_pipeline_validate(dpath_pipeline: Path):
     """Test that pipeline bundles in the repo are valid."""
@@ -109,41 +157,14 @@ def test_runner(
     layout: DatasetLayout
 
     # install the pipeline + any proc dependencies
-    fpath_pipeline = (
-        DPATH_PIPELINES / pipeline_type.value / f"{pipeline_name}-{pipeline_version}"
+    _install_pipeline(
+        layout=layout,
+        pipeline_name=pipeline_name,
+        pipeline_version=pipeline_version,
+        monkeypatch=monkeypatch,
+        pipeline_variables=pipeline_variables,
+        pipeline_type=pipeline_type,
     )
-    paths_to_install = [fpath_pipeline]
-    if pipeline_type == PipelineTypeEnum.EXTRACTION:
-        pipeline_config = ExtractionPipelineConfig(
-            **json.loads((fpath_pipeline / "config.json").read_text())
-        )
-        for info in pipeline_config.PROC_DEPENDENCIES:
-            paths_to_install.append(
-                DPATH_PIPELINES
-                / PipelineTypeEnum.PROCESSING.value
-                / f"{info.NAME}-{info.VERSION}"
-            )
-    for path in paths_to_install:
-        monkeypatch.setattr("sys.stdin", io.StringIO("n"))  # do not install container
-        installer = PipelineInstallWorkflow(dpath_root=layout.dpath_root, source=path)
-        installer.run()
-
-    # set pipeline variables
-    config = Config.load(layout.fpath_config)
-    variables_to_set = {
-        variable: value
-        for variable, value in pipeline_variables.items()
-        if (
-            variable
-            in config.PIPELINE_VARIABLES.get_variables(
-                pipeline_type, pipeline_name, pipeline_version
-            )
-        )
-    }
-    config.PIPELINE_VARIABLES.set_variables(
-        pipeline_type, pipeline_name, pipeline_version, variables_to_set
-    )
-    config.save(layout.fpath_config)
 
     runner_class = {
         PipelineTypeEnum.BIDSIFICATION: BidsConversionRunner,
@@ -181,10 +202,26 @@ def test_runner(
 @pytest.mark.parametrize(
     "pipeline_info", PIPELINE_INFO_BY_TYPE[PipelineTypeEnum.PROCESSING]
 )
-def test_tracker(pipeline_info, single_subject_dataset):
+def test_tracker(
+    pipeline_info,
+    single_subject_dataset,
+    pipeline_variables: dict[str, str],
+    monkeypatch: pytest.MonkeyPatch,
+):
     pipeline_name, pipeline_version, pipeline_step = pipeline_info
     layout, participant_id, session_id = single_subject_dataset
     layout: DatasetLayout
+
+    # install the pipeline
+    _install_pipeline(
+        layout=layout,
+        pipeline_name=pipeline_name,
+        pipeline_version=pipeline_version,
+        monkeypatch=monkeypatch,
+        pipeline_variables=pipeline_variables,
+        pipeline_type=PipelineTypeEnum.PROCESSING,
+    )
+
     tracker = PipelineTracker(
         dpath_root=layout.dpath_root,
         pipeline_name=pipeline_name,
