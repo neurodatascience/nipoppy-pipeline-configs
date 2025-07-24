@@ -1,0 +1,22 @@
+{
+    "input_dir": "[[NIPOPPY_DPATH_PIPELINE_OUTPUT]]/[[NIPOPPY_BIDS_SESSION_ID]]",
+    "output_dir": "[[NIPOPPY_DPATH_PIPELINE_IDP]]/qsirecon-1.1.0",
+    "analysis_level": "participant",
+    "participant_label": [
+        "[[NIPOPPY_PARTICIPANT_ID]]"
+    ],
+    "bids_database_dir": "[[NIPOPPY_DPATH_PIPELINE_BIDS_DB]]",
+    "output_resolution": 1.0,
+    "recon_spec": "mrtrix_singleshell_ss3t_ACT-fast",
+    "work_dir": "[[NIPOPPY_DPATH_PIPELINE_WORK]]",
+    "input_type": "qsiprep",
+    "atlases": [
+        "AAL116",
+        "Gordon333Ext"
+    ],
+    "fs_license_file": "[[FREESURFER_LICENSE_FILE]]",
+    "notrack": true,
+    "nprocs": 4,
+    "mem": "16G",
+    "stop_on_first_crash": true
+}
