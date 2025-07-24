@@ -3,7 +3,11 @@
     "description": "Estimate a regular diffusion tensor model (DTI) and up to 2 freewater corrected diffusion models (fwDTI) with equivalent parameter and residual maps",
     "tool-version": "2.0.0",
     "schema-version": "0.5",
-    "command-line": "[[NIPOPPY_CONTAINER_COMMAND]] [[NIPOPPY_FPATH_CONTAINER]] [PARTICIPANT_LABEL] [SESSION_LABEL] [DWI_FILE] [DWI_BVAL] [DWI_BVEC] [OUTPUT_DIR] [USE_SHELLS]",
+    "command-line": "/opt/fwdti/fit_fw_scilpy.sh [PARTICIPANT_LABEL] [SESSION_LABEL] [DWI_FILE] [DWI_BVAL] [DWI_BVEC] [OUTPUT_DIR] [USE_SHELLS]",
+    "container-image": {
+        "image": "bcmcpher/dmri-freewater:2.0.0",
+        "type": "docker"
+    },
     "inputs": [
         {
             "id": "subject",
