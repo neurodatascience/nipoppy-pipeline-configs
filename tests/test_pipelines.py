@@ -1,12 +1,14 @@
 """Test pipeline configurations."""
 
+import io
 import json
+import re
 import warnings
 from pathlib import Path
 
 import pytest
-from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
 from nipoppy.config.container import ContainerInfo
+from nipoppy.config.main import Config
 from nipoppy.config.pipeline import BidsPipelineConfig, ExtractionPipelineConfig
 from nipoppy.env import PipelineTypeEnum
 from nipoppy.layout import DatasetLayout
@@ -17,7 +19,22 @@ from nipoppy.workflows import (
     PipelineRunner,
     PipelineTracker,
     PipelineValidateWorkflow,
+    PipelineInstallWorkflow,
 )
+
+from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
+
+VARIABLE_REPLACE_PATTERN = re.compile(r"\[\[(.*?)\]\]")
+
+
+@pytest.fixture
+def pipeline_variables(tmp_path: Path) -> dict[str, str]:
+    return {
+        "HEUDICONV_HEURISTIC_FILE": str(tmp_path / "heuristic.py"),
+        "DCM2BIDS_CONFIG_FILE": str(tmp_path / "dcm2bids_config.json"),
+        "FREESURFER_LICENSE_FILE": str(tmp_path / "freesurfer_license.txt"),
+        "TEMPLATEFLOW_HOME": str(tmp_path / "templateflow"),
+    }
 
 
 @pytest.mark.parametrize("dpath_pipeline", DPATH_PIPELINES.glob("*/*-*"))
@@ -82,19 +99,58 @@ def test_extraction_invocation(fpath_invocation: Path):
 def test_runner(
     pipeline_info: tuple[str, str, str],
     pipeline_type: PipelineTypeEnum,
+    pipeline_variables: dict[str, str],
     single_subject_dataset,
+    monkeypatch: pytest.MonkeyPatch,
 ):
     """Test that pipelines run successfully in "simulate" mode."""
     pipeline_name, pipeline_version, pipeline_step = pipeline_info
     layout, participant_id, session_id = single_subject_dataset
     layout: DatasetLayout
 
+    # install the pipeline + any proc dependencies
+    fpath_pipeline = (
+        DPATH_PIPELINES / pipeline_type.value / f"{pipeline_name}-{pipeline_version}"
+    )
+    paths_to_install = [fpath_pipeline]
+    if pipeline_type == PipelineTypeEnum.EXTRACTION:
+        pipeline_config = ExtractionPipelineConfig(
+            **json.loads((fpath_pipeline / "config.json").read_text())
+        )
+        for info in pipeline_config.PROC_DEPENDENCIES:
+            paths_to_install.append(
+                DPATH_PIPELINES
+                / PipelineTypeEnum.PROCESSING.value
+                / f"{info.NAME}-{info.VERSION}"
+            )
+    for path in paths_to_install:
+        monkeypatch.setattr("sys.stdin", io.StringIO("n"))  # do not install container
+        installer = PipelineInstallWorkflow(dpath_root=layout.dpath_root, source=path)
+        installer.run()
+
+    # set pipeline variables
+    config = Config.load(layout.fpath_config)
+    variables_to_set = {
+        variable: value
+        for variable, value in pipeline_variables.items()
+        if (
+            variable
+            in config.PIPELINE_VARIABLES.get_variables(
+                pipeline_type, pipeline_name, pipeline_version
+            )
+        )
+    }
+    config.PIPELINE_VARIABLES.set_variables(
+        pipeline_type, pipeline_name, pipeline_version, variables_to_set
+    )
+    config.save(layout.fpath_config)
+
     runner_class = {
         PipelineTypeEnum.BIDSIFICATION: BidsConversionRunner,
         PipelineTypeEnum.PROCESSING: PipelineRunner,
         PipelineTypeEnum.EXTRACTION: ExtractionRunner,
     }[pipeline_type]
-    runner = runner_class(
+    runner: PipelineRunner = runner_class(
         dpath_root=layout.dpath_root,
         pipeline_name=pipeline_name,
         pipeline_version=pipeline_version,
@@ -113,12 +169,13 @@ def test_runner(
     if (fpath_container := runner.pipeline_config.get_fpath_container()) is not None:
         fpath_container.touch()
 
-    invocation_str, descriptor_str = runner.run_single(
+    descriptor_str, invocation_str = runner.run_single(
         participant_id=participant_id, session_id=session_id
     )
 
     assert TEMPLATE_REPLACE_PATTERN.search(invocation_str) is None
     assert TEMPLATE_REPLACE_PATTERN.search(descriptor_str) is None
+    assert VARIABLE_REPLACE_PATTERN.search(invocation_str) is None
 
 
 @pytest.mark.parametrize(
