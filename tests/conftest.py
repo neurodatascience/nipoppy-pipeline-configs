@@ -40,9 +40,10 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
         ("qsiprep", "0.23.0", "default"),
     ),
     PipelineTypeEnum.EXTRACTION: (
-        ("fs_stats", "0.2.1", "default"),
-        ("static_FC", "0.1.0", "default"),
         ("dmri_freewater", "2.0.0", "default"),
+        ("fs_stats", "0.2.1", "default"),
+        ("qsirecon", "1.1.0", "default"),
+        ("static_FC", "0.1.0", "default"),
     ),
 }
 
