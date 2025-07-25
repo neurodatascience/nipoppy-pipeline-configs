@@ -6,7 +6,6 @@ from typing import Iterable, Tuple
 
 import pytest
 import pytest_mock
-from nipoppy.config import Config
 from nipoppy.env import PipelineTypeEnum
 from nipoppy.layout import DatasetLayout
 from nipoppy.tabular import Manifest
