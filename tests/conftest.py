@@ -1,13 +1,11 @@
 """Global variables and fixtures for tests."""
 
 import itertools
-import shutil
 from pathlib import Path
 from typing import Iterable, Tuple
 
 import pytest
 import pytest_mock
-from nipoppy.config import Config
 from nipoppy.env import PipelineTypeEnum
 from nipoppy.layout import DatasetLayout
 from nipoppy.tabular import Manifest
@@ -64,28 +62,11 @@ def single_subject_dataset(
     participant_id = "01"
     session_id = "01"
     container_command = "apptainer"
-    substitutions = {
-        "[[HEUDICONV_HEURISTIC_FILE]]": str(tmp_path / "heuristic.py"),
-        "[[DCM2BIDS_CONFIG_FILE]]": str(tmp_path / "dcm2bids_config.json"),
-        "[[FREESURFER_LICENSE_FILE]]": str(tmp_path / "freesurfer_license.txt"),
-        "[[TEMPLATEFLOW_HOME]]": str(tmp_path / "templateflow"),
-    }
 
     # create dataset structure
     workflow = InitWorkflow(dpath_root=dataset_root)
     workflow.run()
     layout = workflow.layout
-
-    # copy pipelines
-    shutil.copytree(DPATH_PIPELINES, layout.dpath_pipelines, dirs_exist_ok=True)
-
-    # generate config file
-    config = Config.load(FPATH_CONFIG, apply_substitutions=False)
-    config.SUBSTITUTIONS = substitutions
-    config.save(layout.fpath_config)
-    for placeholder, fpath in substitutions.items():
-        if "FILE" in placeholder:
-            Path(fpath).touch()
 
     # create manifest and curation status files
     manifest = Manifest().add_or_update_records(
