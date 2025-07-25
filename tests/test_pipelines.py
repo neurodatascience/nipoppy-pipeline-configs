@@ -7,6 +7,7 @@ import warnings
 from pathlib import Path
 
 import pytest
+from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
 from nipoppy.config.container import ContainerInfo
 from nipoppy.config.main import Config
 from nipoppy.config.pipeline import BidsPipelineConfig, ExtractionPipelineConfig
@@ -16,13 +17,11 @@ from nipoppy.utils import TEMPLATE_REPLACE_PATTERN
 from nipoppy.workflows import (
     BidsConversionRunner,
     ExtractionRunner,
+    PipelineInstallWorkflow,
     PipelineRunner,
     PipelineTracker,
     PipelineValidateWorkflow,
-    PipelineInstallWorkflow,
 )
-
-from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
 
 VARIABLE_REPLACE_PATTERN = re.compile(r"\[\[(.*?)\]\]")
 
