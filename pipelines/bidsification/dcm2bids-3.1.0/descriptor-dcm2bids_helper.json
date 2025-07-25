@@ -3,7 +3,11 @@
     "description": "dcm2bids_helper",
     "tool-version": "3.1.0",
     "schema-version": "0.5",
-    "command-line": "[[NIPOPPY_CONTAINER_COMMAND]] [[NIPOPPY_FPATH_CONTAINER]] dcm2bids_helper [DICOM_DIR] [OUTPUT_DIR] [NEST] [FORCE] [LOG_LEVEL]",
+    "command-line": "dcm2bids_helper [DICOM_DIR] [OUTPUT_DIR] [NEST] [FORCE] [LOG_LEVEL]",
+    "container-image": {
+        "image": "unfmontreal/dcm2bids:3.1.0",
+        "type": "docker"
+    },
     "inputs": [
         {
             "name": "dicom_dir",
@@ -65,15 +69,5 @@
         "cpu-cores": 1,
         "ram": 1,
         "walltime-estimate": 60
-    },
-    "custom": {
-        "nipoppy": {
-            "CONTAINER_CONFIG": {
-                "ARGS": [
-                    "--bind",
-                    "[[NIPOPPY_DPATH_SCRATCH]]/dcm2bids_helper"
-                ]
-            }
-        }
     }
 }
