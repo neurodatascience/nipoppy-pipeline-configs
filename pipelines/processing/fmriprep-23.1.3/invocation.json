@@ -18,7 +18,7 @@
     "fs_license_file": "[[FREESURFER_LICENSE_FILE]]",
     "fs_subjects_dir": "[[NIPOPPY_DPATH_DERIVATIVES]]/freesurfer/7.3.2/output/[[NIPOPPY_BIDS_SESSION_ID]]",
     "verbose_count": "-vv",
-    "work_dir": "[[NIPOPPY_DPATH_PIPELINE_WORK]]",
+    "work_dir": "/work",
     "write_graph": true,
     "notrack": true
 }
