@@ -91,6 +91,26 @@ def test_nipoppy_pipeline_validate(dpath_pipeline: Path):
 
 
 @pytest.mark.parametrize(
+    "fpath_descriptor", DPATH_PIPELINES.glob("*/*-*/descriptor*.json")
+)
+def test_descriptors(fpath_descriptor: Path):
+    descriptor = json.loads(fpath_descriptor.read_text())
+    command_line = descriptor["command-line"]
+
+    # old Nipoppy template strings not allowed
+    assert "[[NIPOPPY_CONTAINER_COMMAND]]" not in command_line, str(fpath_descriptor)
+    assert "[[NIPOPPY_FPATH_CONTAINER]]" not in command_line, str(fpath_descriptor)
+
+    if descriptor["name"] not in ("static_FC", "fs_stats"):
+        assert command_line.lstrip()[0] != "[", str(fpath_descriptor)
+    else:
+        assert command_line.startswith("[SCRIPT_PATH]"), str(fpath_descriptor)
+
+    with pytest.raises(KeyError):
+        descriptor["custom"]["nipoppy"], str(fpath_descriptor)
+
+
+@pytest.mark.parametrize(
     "fpath_config", DPATH_PIPELINES.glob("bidsification/*-*/config.json")
 )
 def test_bids_pipeline_configs(fpath_config: Path):

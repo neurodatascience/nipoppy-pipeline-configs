@@ -3,7 +3,11 @@
     "description": "bids-validator",
     "tool-version": "2.0.3",
     "schema-version": "0.5",
-    "command-line": "[[NIPOPPY_CONTAINER_COMMAND]] [[NIPOPPY_FPATH_CONTAINER]] run -ERWN jsr:@bids/validator [DATASET_DIRECTORY] [HELP] [VERSION] [JSON] [SCHEMA] [CONFIG] [MAX_ROWS] [VERBOSE] [IGNORE_WARNINGS] [IGNORE_NIFTI_HEADERS] [DEBUG] [FILENAME_MODE] [BLACKLIST_MODALITIES] [RECURSIVE] [PRUNE] [OUTFILE] [COLOR] [NO_COLOR]",
+    "command-line": "deno run -ERWN jsr:@bids/validator [DATASET_DIRECTORY] [HELP] [VERSION] [JSON] [SCHEMA] [CONFIG] [MAX_ROWS] [VERBOSE] [IGNORE_WARNINGS] [IGNORE_NIFTI_HEADERS] [DEBUG] [FILENAME_MODE] [BLACKLIST_MODALITIES] [RECURSIVE] [PRUNE] [OUTFILE] [COLOR] [NO_COLOR]",
+    "container-image": {
+        "image": "denoland/deno:2.2.3",
+        "type": "docker"
+    },
     "inputs": [
         {
             "id": "dataset_directory",

@@ -15,7 +15,9 @@
             "--bind",
             "[[TEMPLATEFLOW_HOME]]",
             "--bind",
-            "[[NIPOPPY_DPATH_PIPELINE_WORK]]:/work"
+            "[[NIPOPPY_DPATH_PIPELINE_WORK]]:/work",
+            "--bind",
+            "[[NIPOPPY_DPATH_DERIVATIVES]]/freesurfer/7.3.2/output/[[NIPOPPY_BIDS_SESSION_ID]]"
         ]
     },
     "STEPS": [
