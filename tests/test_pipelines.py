@@ -13,15 +13,13 @@ from nipoppy.config.main import Config
 from nipoppy.config.pipeline import BidsPipelineConfig, ExtractionPipelineConfig
 from nipoppy.env import PipelineTypeEnum
 from nipoppy.layout import DatasetLayout
-from nipoppy.utils import TEMPLATE_REPLACE_PATTERN
-from nipoppy.workflows import (
-    BidsConversionRunner,
-    ExtractionRunner,
-    PipelineInstallWorkflow,
-    PipelineRunner,
-    PipelineTracker,
-    PipelineValidateWorkflow,
-)
+from nipoppy.utils.utils import TEMPLATE_REPLACE_PATTERN
+from nipoppy.workflows.bids_conversion import BidsConversionRunner
+from nipoppy.workflows.extractor import ExtractionRunner
+from nipoppy.workflows.pipeline_store.install import PipelineInstallWorkflow
+from nipoppy.workflows.pipeline_store.validate import PipelineValidateWorkflow
+from nipoppy.workflows.runner import PipelineRunner
+from nipoppy.workflows.tracker import PipelineTracker
 
 VARIABLE_REPLACE_PATTERN = re.compile(r"\[\[(.*?)\]\]")
 
