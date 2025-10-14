@@ -51,7 +51,7 @@
             "command-line-flag": "--participant-label",
             "value-key": "[PARTICIPANT_LABEL]"
         },
-	{
+        {
             "name": "session_label",
             "id": "session_label",
             "description": "A space delimited list of session identifiers or a single identifier (the ses- prefix can be removed)",
@@ -204,20 +204,20 @@
             "command-line-flag": "--longitudinal",
             "value-key": "[LONGITUDINAL]"
         },
-	{
-	    "name": "subject_anatomical_reference",
-	    "id": "subject_anatomical_reference",
-	    "description": "How to define subject-specific anatomical space. sessionwise will produce one anatomical space per session. The others combine anatomical data across sessions to define one anatomical space per subject. (default: first-alphabetically",
-	    "type": "String",
-	    "optional": true,
-	    "command-line-flag": "--subject-anatomical-reference",
-	    "value-key": "[SUBJECT_ANATOMICAL_REFERENCE]",
-	    "value-choices": [
-		"first-alphabetically",
-		"unbiased",
-		"sessionwise"
-	    ]
-	},
+        {
+            "name": "subject_anatomical_reference",
+            "id": "subject_anatomical_reference",
+            "description": "How to define subject-specific anatomical space. sessionwise will produce one anatomical space per session. The others combine anatomical data across sessions to define one anatomical space per subject. (default: first-alphabetically",
+            "type": "String",
+            "optional": true,
+            "command-line-flag": "--subject-anatomical-reference",
+            "value-key": "[SUBJECT_ANATOMICAL_REFERENCE]",
+            "value-choices": [
+                "first-alphabetically",
+                "unbiased",
+                "sessionwise"
+            ]
+        },
         {
             "name": "skip_anat_based_spatial_normalization",
             "id": "skip_anat_based_spatial_normalization",
