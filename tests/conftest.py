@@ -37,7 +37,7 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
         ("fmriprep", "24.1.1", "default"),
         ("mriqc", "23.1.0", "default"),
         ("qsiprep", "0.23.0", "default"),
-	("tractoflow", "2.4.2", "default"),
+        ("tractoflow", "2.4.2", "default"),
     ),
     PipelineTypeEnum.EXTRACTION: (
         ("fs_stats", "0.2.1", "default"),
