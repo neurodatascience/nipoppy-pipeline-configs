@@ -8,8 +8,8 @@ import pytest
 import pytest_mock
 from nipoppy.env import PipelineTypeEnum
 from nipoppy.layout import DatasetLayout
-from nipoppy.tabular import Manifest
-from nipoppy.workflows import InitWorkflow
+from nipoppy.tabular.manifest import Manifest
+from nipoppy.workflows.dataset_init import InitWorkflow
 
 DPATH_TESTS = Path(__file__).parent
 DPATH_PIPELINES = DPATH_TESTS.parent / "pipelines"
@@ -82,7 +82,7 @@ def single_subject_dataset(
 
     # patch so that the test runs even if the command is not available
     mocker.patch(
-        "nipoppy.config.container.check_container_command",
+        "nipoppy.container.shutil.which",
         return_value=container_command,
     )
 
