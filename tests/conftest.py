@@ -82,7 +82,7 @@ def single_subject_dataset(
 
     # patch so that the test runs even if the command is not available
     mocker.patch(
-        "nipoppy.config.container.check_container_command",
+        "nipoppy.container.shutil.which",
         return_value=container_command,
     )
 
