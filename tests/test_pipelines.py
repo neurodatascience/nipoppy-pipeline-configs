@@ -201,7 +201,7 @@ def test_runner(
         pipeline_step=pipeline_step,
         simulate=True,
     )
-    runner.layout = layout
+    runner.study.layout = layout
 
     # expect failure if descriptor/invocation files are defined
     if (
