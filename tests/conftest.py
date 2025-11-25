@@ -67,7 +67,7 @@ def single_subject_dataset(
     # create dataset structure
     workflow = InitWorkflow(dpath_root=dataset_root)
     workflow.run()
-    layout = workflow.layout
+    layout = workflow.study.layout
 
     # create manifest and curation status files
     manifest = Manifest().add_or_update_records(
