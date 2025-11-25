@@ -106,7 +106,7 @@ def test_descriptors(fpath_descriptor: Path):
     if descriptor["name"] not in ("static_FC", "fs_stats"):
         assert command_line.lstrip()[0] != "[", str(fpath_descriptor)
     else:
-        assert command_line.startswith("[SCRIPT_PATH]"), str(fpath_descriptor)
+        assert command_line.startswith("python [SCRIPT_PATH]"), str(fpath_descriptor)
 
     with pytest.raises(KeyError):
         descriptor["custom"]["nipoppy"], str(fpath_descriptor)
