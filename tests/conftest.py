@@ -8,8 +8,8 @@ import pytest
 import pytest_mock
 from nipoppy.env import PipelineTypeEnum
 from nipoppy.layout import DatasetLayout
-from nipoppy.tabular import Manifest
-from nipoppy.workflows import InitWorkflow
+from nipoppy.tabular.manifest import Manifest
+from nipoppy.workflows.dataset_init import InitWorkflow
 
 DPATH_TESTS = Path(__file__).parent
 DPATH_PIPELINES = DPATH_TESTS.parent / "pipelines"
@@ -38,6 +38,7 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
         ("mriqc", "23.1.0", "default"),
         ("qsiprep", "0.23.0", "default"),
         ("tractoflow", "2.4.2", "default"),
+        ("qsiprep", "1.0.1", "default"),
     ),
     PipelineTypeEnum.EXTRACTION: (
         ("fs_stats", "0.2.1", "default"),
@@ -67,7 +68,7 @@ def single_subject_dataset(
     # create dataset structure
     workflow = InitWorkflow(dpath_root=dataset_root)
     workflow.run()
-    layout = workflow.layout
+    layout = workflow.study.layout
 
     # create manifest and curation status files
     manifest = Manifest().add_or_update_records(
@@ -82,7 +83,7 @@ def single_subject_dataset(
 
     # patch so that the test runs even if the command is not available
     mocker.patch(
-        "nipoppy.config.container.check_container_command",
+        "nipoppy.container.shutil.which",
         return_value=container_command,
     )
 

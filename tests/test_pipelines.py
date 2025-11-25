@@ -10,18 +10,20 @@ import pytest
 from conftest import DPATH_PIPELINES, PIPELINE_INFO_AND_TYPE, PIPELINE_INFO_BY_TYPE
 from nipoppy.config.container import ContainerInfo
 from nipoppy.config.main import Config
-from nipoppy.config.pipeline import BidsPipelineConfig, ExtractionPipelineConfig
+from nipoppy.config.pipeline import (
+    BIDSificationPipelineConfig,
+    ExtractionPipelineConfig,
+)
 from nipoppy.env import PipelineTypeEnum
 from nipoppy.layout import DatasetLayout
-from nipoppy.utils import TEMPLATE_REPLACE_PATTERN
-from nipoppy.workflows import (
-    BidsConversionRunner,
-    ExtractionRunner,
-    PipelineInstallWorkflow,
-    PipelineRunner,
-    PipelineTracker,
-    PipelineValidateWorkflow,
-)
+from nipoppy.utils.utils import TEMPLATE_REPLACE_PATTERN
+from nipoppy.workflows.bids_conversion import BIDSificationRunner
+from nipoppy.workflows.extractor import ExtractionRunner
+from nipoppy.workflows.pipeline_store.install import PipelineInstallWorkflow
+from nipoppy.workflows.pipeline_store.validate import PipelineValidateWorkflow
+from nipoppy.workflows.processing_runner import ProcessingRunner
+from nipoppy.workflows.runner import Runner
+from nipoppy.workflows.tracker import PipelineTracker
 
 VARIABLE_REPLACE_PATTERN = re.compile(r"\[\[(.*?)\]\]")
 
@@ -114,7 +116,9 @@ def test_descriptors(fpath_descriptor: Path):
     "fpath_config", DPATH_PIPELINES.glob("bidsification/*-*/config.json")
 )
 def test_bids_pipeline_configs(fpath_config: Path):
-    pipeline_config = BidsPipelineConfig(**json.loads(fpath_config.read_text()))
+    pipeline_config = BIDSificationPipelineConfig(
+        **json.loads(fpath_config.read_text())
+    )
     if not any(
         [step.ANALYSIS_LEVEL == "participant_session" for step in pipeline_config.STEPS]
     ):
@@ -186,18 +190,18 @@ def test_runner(
     )
 
     runner_class = {
-        PipelineTypeEnum.BIDSIFICATION: BidsConversionRunner,
-        PipelineTypeEnum.PROCESSING: PipelineRunner,
+        PipelineTypeEnum.BIDSIFICATION: BIDSificationRunner,
+        PipelineTypeEnum.PROCESSING: ProcessingRunner,
         PipelineTypeEnum.EXTRACTION: ExtractionRunner,
     }[pipeline_type]
-    runner: PipelineRunner = runner_class(
+    runner: Runner = runner_class(
         dpath_root=layout.dpath_root,
         pipeline_name=pipeline_name,
         pipeline_version=pipeline_version,
         pipeline_step=pipeline_step,
         simulate=True,
     )
-    runner.layout = layout
+    runner.study.layout = layout
 
     # expect failure if descriptor/invocation files are defined
     if (
@@ -206,7 +210,7 @@ def test_runner(
     ):
         pytest.xfail(f"Pipeline {pipeline_info} has no descriptor or invocation file")
 
-    if (fpath_container := runner.pipeline_config.get_fpath_container()) is not None:
+    if (fpath_container := runner.pipeline_config.CONTAINER_INFO.FILE) is not None:
         fpath_container.touch()
 
     descriptor_str, invocation_str = runner.run_single(
