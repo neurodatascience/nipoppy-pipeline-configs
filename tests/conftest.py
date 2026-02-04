@@ -19,6 +19,8 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
     PipelineTypeEnum.BIDSIFICATION: (
         ("heudiconv", "0.12.2", "prepare"),
         ("heudiconv", "0.12.2", "convert"),
+        ("heudiconv", "1.3.4", "prepare"),
+        ("heudiconv", "1.3.4", "convert"),
         ("dcm2bids", "3.1.0", "prepare"),
         ("dcm2bids", "3.1.0", "convert"),
         ("dcm2bids", "3.2.0", "prepare"),
