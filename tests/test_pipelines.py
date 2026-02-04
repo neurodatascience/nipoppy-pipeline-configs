@@ -112,6 +112,13 @@ def test_descriptors(fpath_descriptor: Path):
         descriptor["custom"]["nipoppy"], str(fpath_descriptor)
 
 
+@pytest.mark.parametrize("fpath_config", DPATH_PIPELINES.glob("*/*-*/config.json"))
+def test_bind_paths_in_configs(fpath_config: Path):
+    assert (
+        "--bind" not in fpath_config.read_text()
+    ), f"--bind arg found in {fpath_config}, should use BIND_ARGS instead"
+
+
 @pytest.mark.parametrize(
     "fpath_config", DPATH_PIPELINES.glob("bidsification/*-*/config.json")
 )
