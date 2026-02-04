@@ -9,8 +9,7 @@
         "ENV_VARS": {
             "TEMPLATEFLOW_HOME": "[[TEMPLATEFLOW_HOME]]"
         },
-        "ARGS": [
-            "--bind",
+        "BIND_PATHS": [
             "[[TEMPLATEFLOW_HOME]]"
         ]
     },
