@@ -22,7 +22,7 @@
             "DESCRIPTOR_FILE": "descriptor.json",
             "HPC_CONFIG_FILE": "hpc.json",
             "TRACKER_CONFIG_FILE": "tracker.json",
-	        "PYBIDS_IGNORE_FILE": "pybids_ignore.json"
+            "PYBIDS_IGNORE_FILE": "pybids_ignore.json"
         }
     ],
     "VARIABLES": {
