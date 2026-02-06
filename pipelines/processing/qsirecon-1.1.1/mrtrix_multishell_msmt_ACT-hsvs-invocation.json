@@ -1,0 +1,21 @@
+{
+    "input_dir": "[[NIPOPPY_DPATH_DERIVATIVES]]/qsiprep/${QSIPREP_VERSION}/output/[[NIPOPPY_BIDS_SESSION_ID]]",
+    "output_dir": "[[NIPOPPY_DPATH_PIPELINE_OUTPUT]]/[[NIPOPPY_BIDS_SESSION_ID]]",
+    "analysis_level": "participant",
+    "participant_label": [
+        "[[NIPOPPY_PARTICIPANT_ID]]"
+    ],
+    "bids_database_dir": "[[NIPOPPY_DPATH_PIPELINE_BIDS_DB]]",
+    "fs_subjects_dir": "[[NIPOPPY_DPATH_DERIVATIVES]]/freesurfer/${FREESURFER_VERSION}/output/[[NIPOPPY_BIDS_SESSION_ID]]",
+    "work_dir": "[[NIPOPPY_DPATH_PIPELINE_WORK]]",
+    "input_type": "qsiprep",
+    "recon_spec": "mrtrix_multishell_msmt_ACT-hsvs",
+    "atlases": [
+        "4S156Parcels"
+    ],
+    "fs_license_file": "[[FREESURFER_LICENSE_FILE]]",
+    "notrack": true,
+    "nprocs": 8,
+    "mem": "16G",
+    "stop_on_first_crash": true
+}
