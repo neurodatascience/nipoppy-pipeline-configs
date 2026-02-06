@@ -23,7 +23,7 @@
             "DESCRIPTOR_FILE": "descriptor.json",
             "HPC_CONFIG_FILE": "hpc.json",
             "TRACKER_CONFIG_FILE": "dsi_studio_autotrack-tracker.json",
-	        "PYBIDS_IGNORE_FILE": "pybids_ignore.json"
+            "PYBIDS_IGNORE_FILE": "pybids_ignore.json"
         },
         {
             "NAME": "mrtrix_multishell_msmt_ACT-hsvs",
@@ -31,10 +31,8 @@
             "DESCRIPTOR_FILE": "descriptor.json",
             "HPC_CONFIG_FILE": "hpc.json",
             "TRACKER_CONFIG_FILE": "mrtrix_multishell_msmt_ACT-hsvs-tracker.json",
-	        "PYBIDS_IGNORE_FILE": "pybids_ignore.json"
+            "PYBIDS_IGNORE_FILE": "pybids_ignore.json"
         }
-
-        
     ],
     "VARIABLES": {
         "FREESURFER_LICENSE_FILE": "Path to FreeSurfer license file",
