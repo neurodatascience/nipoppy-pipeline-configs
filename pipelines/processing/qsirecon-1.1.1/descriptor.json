@@ -216,7 +216,7 @@
             "value-key": "[RECON_SPEC]",
             "value-choices": [
                 "amico_noddi",
-                "dsi_studio_autotrack",            
+                "dsi_studio_autotrack",
                 "mrtrix_multishell_msmt_ACT-hsvs"
             ]
         },
