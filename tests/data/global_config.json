@@ -47,6 +47,14 @@
                     "FREESURFER_LICENSE_FILE": "[[FREESURFER_LICENSE_FILE]]",
                     "TEMPLATEFLOW_HOME": "[[TEMPLATEFLOW_HOME]]"
                 }
+            },
+            "qsirecon": {
+                "1.1.1": {
+                    "FREESURFER_LICENSE_FILE": "[[FREESURFER_LICENSE_FILE]]",
+                    "TEMPLATEFLOW_HOME": "[[TEMPLATEFLOW_HOME]]",
+                    "QSIPREP_VERSION": "[[QSIPREP_VERSION]]",
+                    "FREESURFER_VERSION": "[[FREESURFER_VERSION]]"
+                }
             }
         },
         "EXTRACTION": {
