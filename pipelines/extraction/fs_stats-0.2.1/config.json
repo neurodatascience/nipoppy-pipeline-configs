@@ -9,8 +9,7 @@
         "ENV_VARS": {
             "FS_LICENSE": "[[FREESURFER_LICENSE_FILE]]"
         },
-        "ARGS": [
-            "--bind",
+        "BIND_PATHS": [
             "[[FREESURFER_LICENSE_FILE]]"
         ]
     },

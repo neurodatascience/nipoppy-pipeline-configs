@@ -13,8 +13,7 @@
             "HPC_CONFIG_FILE": "hpc.json",
             "ANALYSIS_LEVEL": "group",
             "CONTAINER_CONFIG": {
-                "ARGS": [
-                    "--bind",
+                "BIND_PATHS": [
                     "[[NIPOPPY_DPATH_SCRATCH]]/dcm2bids_helper"
                 ]
             }
@@ -25,8 +24,7 @@
             "DESCRIPTOR_FILE": "descriptor-dcm2bids.json",
             "HPC_CONFIG_FILE": "hpc.json",
             "CONTAINER_CONFIG": {
-                "ARGS": [
-                    "--bind",
+                "BIND_PATHS": [
                     "[[DCM2BIDS_CONFIG_FILE]]"
                 ]
             },
