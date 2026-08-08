@@ -18,8 +18,7 @@
             "DESCRIPTOR_FILE": "descriptor.json",
             "HPC_CONFIG_FILE": "hpc.json",
             "CONTAINER_CONFIG": {
-                "ARGS": [
-                    "--bind",
+                "BIND_PATHS": [
                     "[[HEUDICONV_HEURISTIC_FILE]]"
                 ]
             },
