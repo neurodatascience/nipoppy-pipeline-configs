@@ -237,7 +237,6 @@
             "description": "Modality to use as the anatomical reference. Images of this contrast will be skull stripped and segmented for use in the visual reports. If --infant, T2w is forced.",
             "type": "String",
             "optional": true,
-            "default-value": "T1w",
             "command-line-flag": "--anat-modality",
             "value-key": "[ANAT_MODALITY]",
             "value-choices": [
@@ -252,7 +251,6 @@
             "description": "any value in the .bval file less than this will be considered a b=0 image. Current default threshold = 100; this threshold can be lowered or increased. Note, setting this too high can result in inaccurate results.",
             "type": "Number",
             "optional": true,
-            "default-value": 100,
             "command-line-flag": "--b0-threshold",
             "value-key": "[B0_THRESHOLD]"
         },
@@ -262,7 +260,6 @@
             "description": "window size in voxels for image-based denoising, integer or \"auto\".If \"auto\", 5 will be used for dwidenoise and auto-configured for patch2self based on the number of b>0 images.",
             "type": "String",
             "optional": true,
-            "default-value": "auto",
             "command-line-flag": "--dwi-denoise-window",
             "value-key": "[DWI_DENOISE_WINDOW]"
         },
@@ -272,7 +269,6 @@
             "description": "Image-based denoising method. Either \"dwidenoise\" (MRtrix), \"patch2self\" (DIPY) or none. (default: dwidenoise)",
             "type": "String",
             "optional": true,
-            "default-value": "dwidenoise",
             "command-line-flag": "--denoise-method",
             "value-key": "[DENOISE_METHOD]",
             "value-choices": [
@@ -310,7 +306,6 @@
             "description": "Which stage to apply B1 bias correction. The default 'final' will apply it after all the data has been resampled to its final space. 'none' will skip B1 bias correction and 'legacy' will behave consistent with qsiprep < 0.17.",
             "type": "String",
             "optional": true,
-            "default-value": "final",
             "command-line-flag": "--b1-biascorrect-stage",
             "value-key": "[B1_BIASCORRECT_STAGE]",
             "value-choices": [
@@ -352,7 +347,6 @@
             "description": "How to combine images across distorted groups.\n - concatenate: append images in the 4th dimension\n  - average: if a whole sequence was duplicated in both PE\n            directions, average the corrected images of the same\n            q-space coordinate\n - none: Default. Keep distorted groups separate",
             "type": "String",
             "optional": true,
-            "default-value": "none",
             "command-line-flag": "--distortion-group-merge",
             "value-key": "[DISTORTION_GROUP_MERGE]",
             "value-choices": [
@@ -367,7 +361,6 @@
             "description": "volume template space (default: MNI152NLin2009cAsym)",
             "type": "String",
             "optional": true,
-            "default-value": "MNI152NLin2009cAsym",
             "command-line-flag": "--anatomical-template",
             "value-key": "[ANATOMICAL_TEMPLATE]",
             "value-choices": [
@@ -389,7 +382,6 @@
             "description": "Degrees of freedom when registering b0 to anatomical images. 6 degrees (rotation and translation) are used by default.",
             "type": "String",
             "optional": true,
-            "default-value": "Rigid",
             "command-line-flag": "--b0-to-t1w-transform",
             "value-key": "[B0_TO_T1W_TRANSFORM]",
             "value-choices": [
@@ -412,7 +404,6 @@
             "description": "Transformation used for building the intramodal template.",
             "type": "String",
             "optional": true,
-            "default-value": "BSplineSyN",
             "command-line-flag": "--intramodal-template-transform",
             "value-key": "[INTRAMODAL_TEMPLATE_TRANSFORM]",
             "value-choices": [
@@ -437,7 +428,6 @@
             "description": "align to the \"first\" b0 volume or do an \"iterative\" registration of all b0 images to their midpoint image (default: iterative)",
             "type": "String",
             "optional": true,
-            "default-value": "iterative",
             "command-line-flag": "--b0-motion-corr-to",
             "value-key": "[B0_MOTION_CORR_TO]",
             "value-choices": [
@@ -451,7 +441,6 @@
             "description": "transformation to be optimized during head motion correction (default: affine)",
             "type": "String",
             "optional": true,
-            "default-value": "Affine",
             "command-line-flag": "--hmc-transform",
             "value-key": "[HMC_TRANSFORM]",
             "value-choices": [
@@ -465,7 +454,6 @@
             "description": "model used to generate target images for hmc. If \"none\" the non-b0 images will be warped using the same transform as their nearest b0 image. If \"3dSHORE\", SHORELine will be used. if \"tensor\", SHORELine iterations with a tensor model will be used",
             "type": "String",
             "optional": true,
-            "default-value": "eddy",
             "command-line-flag": "--hmc-model",
             "value-key": "[HMC_MODEL]",
             "value-choices": [
@@ -490,7 +478,6 @@
             "description": "number of SHORELine iterations. (default: 2)",
             "type": "Number",
             "optional": true,
-            "default-value": 2,
             "command-line-flag": "--shoreline-iters",
             "value-key": "[SHORELINE_ITERS]"
         },
@@ -500,7 +487,6 @@
             "description": "select which SDC method to use for PEPOLAR fieldmaps (default: TOPUP)",
             "type": "String",
             "optional": true,
-            "default-value": "TOPUP",
             "command-line-flag": "--pepolar-method",
             "value-key": "[PEPOLAR_METHOD]",
             "value-choices": [

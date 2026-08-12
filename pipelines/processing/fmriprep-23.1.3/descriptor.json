@@ -224,7 +224,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[BOLD2T1W_INIT]",
-            "default-value": "register",
             "value-choices": [
                 "register",
                 "header"
@@ -238,7 +237,6 @@
             "optional": true,
             "type": "Number",
             "value-key": "[BOLD2T1W_DOF]",
-            "default-value": 6,
             "value-choices": [
                 6,
                 9,
@@ -298,7 +296,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[ME_T2S_FIT_METHOD]",
-            "default-value": "curvefit",
             "value-choices": [
                 "curvefit",
                 "loglin"
@@ -312,7 +309,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[OUTPUT_LAYOUT]",
-            "default-value": "bids",
             "value-choices": [
                 "bids",
                 "legacy"
@@ -411,7 +407,6 @@
             "optional": true,
             "type": "Number",
             "value-key": "[REGRESSORS_FD_TH]",
-            "default-value": 0.5,
             "command-line-flag": "--fd-spike-threshold"
         },
         {
@@ -421,7 +416,6 @@
             "optional": true,
             "type": "Number",
             "value-key": "[REGRESSORS_DVARS_TH]",
-            "default-value": 1.5,
             "command-line-flag": "--dvars-spike-threshold"
         },
         {
@@ -431,7 +425,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[SKULL_STRIP_TEMPLATE]",
-            "default-value": "OASIS30ANTs",
             "command-line-flag": "--skull-strip-template"
         },
         {
@@ -450,7 +443,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[SKULL_STRIP_T1W]",
-            "default-value": "force",
             "value-choices": [
                 "auto",
                 "skip",
@@ -550,7 +542,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[COUNTRY_CODE]",
-            "default-value": "CAN",
             "command-line-flag": "--country-code"
         },
         {

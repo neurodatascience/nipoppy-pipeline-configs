@@ -66,7 +66,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[SPECIES]",
-            "default-value": "human",
             "value-choices": [
                 "human",
                 "rat"
@@ -117,12 +116,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[MODALITIES]",
-            "default-value": [
-                "T1w",
-                "T2w",
-                "bold",
-                "dwi"
-            ],
             "value-choices": [
                 "T1w",
                 "T2w",
@@ -202,7 +195,6 @@
             "optional": true,
             "type": "Flag",
             "value-key": "[FLOAT32]",
-            "default-value": true,
             "command-line-flag": "-f"
         },
         {
@@ -365,7 +357,6 @@
             "optional": true,
             "type": "Number",
             "value-key": "[FD_THRES]",
-            "default-value": 0.2,
             "command-line-flag": "--fd_thres"
         },
         {

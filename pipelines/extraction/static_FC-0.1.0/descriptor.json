@@ -38,16 +38,6 @@
             "type": "String",
             "list": true,
             "optional": true,
-            "default-value": [
-                "schaefer_100",
-                "schaefer_200",
-                "schaefer_300",
-                "schaefer_400",
-                "schaefer_500",
-                "schaefer_600",
-                "schaefer_800",
-                "schaefer_1000"
-            ],
             "command-line-flag": "--brain_atlas_list",
             "value-key": "[BRAIN_ATLASES_LIST]",
             "value-choices": [
@@ -68,7 +58,6 @@
             "description": "Confound strategy for FC assessment. Default is simple.",
             "type": "String",
             "optional": true,
-            "default-value": "simple",
             "command-line-flag": "--confound_strategy",
             "value-key": "[CONFOUND_STRATEGY]",
             "value-choices": [
@@ -85,9 +74,6 @@
             "type": "String",
             "list": true,
             "optional": true,
-            "default-value": [
-                "correlation"
-            ],
             "command-line-flag": "--metric_list",
             "value-key": "[FC_METRICS_LIST]",
             "value-choices": [
@@ -110,7 +96,6 @@
             "description": "Space of the input nifti file.",
             "type": "String",
             "optional": true,
-            "default-value": "MNI152NLin2009cAsym_res-2",
             "command-line-flag": "--space",
             "value-key": "[SPACE]"
         }
