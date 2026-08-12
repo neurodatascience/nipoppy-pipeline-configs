@@ -6,8 +6,7 @@
         "URI": "docker://denoland/deno:2.2.3"
     },
     "CONTAINER_CONFIG": {
-        "ARGS": [
-            "--bind",
+        "BIND_PATHS": [
             "[[NIPOPPY_DPATH_SCRATCH]]/deno:/deno-dir"
         ]
     },
