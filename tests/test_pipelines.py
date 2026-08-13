@@ -108,6 +108,9 @@ def test_descriptors(fpath_descriptor: Path):
     else:
         assert command_line.startswith("python [SCRIPT_PATH]"), str(fpath_descriptor)
 
+    for input_ in descriptor.get("inputs", []):
+        assert "default-value" not in input_, str(fpath_descriptor)
+
     with pytest.raises(KeyError):
         descriptor["custom"]["nipoppy"], str(fpath_descriptor)
 

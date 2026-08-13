@@ -35,7 +35,6 @@
             "description": "Whether to process a single FreeSurfer subjects directory or multiple directories (default: single).",
             "type": "String",
             "optional": true,
-            "default-value": "single",
             "command-line-flag": "--mode",
             "value-key": "[MODE]",
             "value-choices": [
@@ -59,9 +58,6 @@
             "type": "String",
             "list": true,
             "optional": true,
-            "default-value": [
-                "volume"
-            ],
             "command-line-flag": "--aseg-measures",
             "value-key": "[ASEG_MEASURES]"
         },
@@ -72,11 +68,6 @@
             "type": "String",
             "list": true,
             "optional": true,
-            "default-value": [
-                "aparc",
-                "aparc.a2009s",
-                "aparc.DKTatlas"
-            ],
             "command-line-flag": "--aparc-parcellations",
             "value-key": "[APARC_PARCELLATIONS]"
         },
@@ -87,11 +78,6 @@
             "type": "String",
             "list": true,
             "optional": true,
-            "default-value": [
-                "thickness",
-                "area",
-                "meancurv"
-            ],
             "command-line-flag": "--aparc-measures",
             "value-key": "[APARC_MEASURES]"
         },
@@ -129,12 +115,6 @@
             "type": "String",
             "list": true,
             "optional": true,
-            "default-value": [
-                "surf/lh.white",
-                "surf/rh.white",
-                "surf/lh.pial",
-                "surf/rh.pial"
-            ],
             "command-line-flag": "--euler-surf-paths",
             "value-key": "[EULER_SURF_PATHS]"
         },
@@ -145,9 +125,6 @@
             "type": "String",
             "list": true,
             "optional": true,
-            "default-value": [
-                "mri/norm.mgz"
-            ],
             "command-line-flag": "--cnr-vol-paths",
             "value-key": "[CNR_VOL_PATHS]"
         },
@@ -158,10 +135,6 @@
             "type": "String",
             "list": true,
             "optional": true,
-            "default-value": [
-                "gray_white_cnr",
-                "gray_csf_cnr"
-            ],
             "command-line-flag": "--cnr-measures",
             "value-key": "[CNR_MEASURES]",
             "value-choices": [
@@ -181,7 +154,6 @@
             "description": "Column name to use for the subject ID in the final output file (default: \"participant_id\").",
             "type": "String",
             "optional": true,
-            "default-value": "participant_id",
             "command-line-flag": "--sub-colname",
             "value-key": "[SUB_COLNAME]"
         },
@@ -191,7 +163,6 @@
             "description": "Column name to use for the session ID in the final output file (default: \"session_id\").",
             "type": "String",
             "optional": true,
-            "default-value": "session_id",
             "command-line-flag": "--ses-colname",
             "value-key": "[SES_COLNAME]"
         },
@@ -201,7 +172,6 @@
             "description": "Prefix to strip from the subject IDs in the final output file (default: \"sub-\"). Set as empty string to keep the original values.",
             "type": "String",
             "optional": true,
-            "default-value": "sub-",
             "command-line-flag": "--sub-prefix",
             "value-key": "[SUB_PREFIX]"
         },
@@ -211,7 +181,6 @@
             "description": "Prefix to strip from the session IDs in the final output file (default: \"ses-\"). Set as empty string to keep the original values.",
             "type": "String",
             "optional": true,
-            "default-value": "ses-",
             "command-line-flag": "--ses-prefix",
             "value-key": "[SES_PREFIX]"
         },
