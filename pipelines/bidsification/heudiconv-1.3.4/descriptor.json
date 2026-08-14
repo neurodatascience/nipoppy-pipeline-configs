@@ -52,7 +52,6 @@
             "description": "Tool to use for DICOM conversion. Setting to \"none\" disables the actual conversion step -- useful for testing heuristics.",
             "type": "String",
             "optional": true,
-            "default-value": "dcm2niix",
             "command-line-flag": "-c",
             "value-key": "[CONVERTER]",
             "value-choices": [
@@ -187,7 +186,6 @@
             "description": "How to group dicoms (default: by studyUID).",
             "type": "String",
             "optional": true,
-            "default-value": "studyUID",
             "command-line-flag": "-g",
             "value-key": "[GROUPING]",
             "value-choices": [

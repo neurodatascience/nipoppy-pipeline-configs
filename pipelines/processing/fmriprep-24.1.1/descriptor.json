@@ -171,7 +171,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[LEVEL]",
-            "default-value": "full",
             "value-choices": [
                 "minimal",
                 "resampling",
@@ -268,7 +267,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[BOLD2ANAT_INIT]",
-            "default-value": "auto",
             "value-choices": [
                 "auto",
                 "t1w",
@@ -284,7 +282,6 @@
             "optional": true,
             "type": "Number",
             "value-key": "[BOLD2ANAT_DOF]",
-            "default-value": 6,
             "value-choices": [
                 6,
                 9,
@@ -344,7 +341,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[ME_T2S_FIT_METHOD]",
-            "default-value": "curvefit",
             "value-choices": [
                 "curvefit",
                 "loglin"
@@ -358,7 +354,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[OUTPUT_LAYOUT]",
-            "default-value": "bids",
             "value-choices": [
                 "bids",
                 "legacy"
@@ -381,7 +376,6 @@
             "optional": true,
             "type": "Number",
             "value-key": "[AGGR_SES_REPORTS]",
-            "default-value": 4,
             "command-line-flag": "--aggregate-session-reports"
         },
         {
@@ -476,7 +470,6 @@
             "optional": true,
             "type": "Number",
             "value-key": "[REGRESSORS_FD_TH]",
-            "default-value": 0.5,
             "command-line-flag": "--fd-spike-threshold"
         },
         {
@@ -486,7 +479,6 @@
             "optional": true,
             "type": "Number",
             "value-key": "[REGRESSORS_DVARS_TH]",
-            "default-value": 1.5,
             "command-line-flag": "--dvars-spike-threshold"
         },
         {
@@ -496,7 +488,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[SKULL_STRIP_TEMPLATE]",
-            "default-value": "OASIS30ANTs",
             "command-line-flag": "--skull-strip-template"
         },
         {
@@ -515,7 +506,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[SKULL_STRIP_T1W]",
-            "default-value": "force",
             "value-choices": [
                 "auto",
                 "skip",
@@ -624,7 +614,6 @@
             "optional": true,
             "type": "String",
             "value-key": "[COUNTRY_CODE]",
-            "default-value": "CAN",
             "command-line-flag": "--country-code"
         },
         {

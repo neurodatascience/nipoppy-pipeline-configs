@@ -52,7 +52,6 @@
             "description": "Set logging level to the console. [%(default)s]",
             "type": "String",
             "optional": true,
-            "default-value": "INFO",
             "command-line-flag": "-l",
             "value-key": "[LOG_LEVEL]",
             "value-choices": [

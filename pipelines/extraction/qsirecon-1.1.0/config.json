@@ -9,10 +9,8 @@
         "ENV_VARS": {
             "TEMPLATEFLOW_HOME": "[[TEMPLATEFLOW_HOME]]"
         },
-        "ARGS": [
-            "--bind",
+        "BIND_PATHS": [
             "[[FREESURFER_LICENSE_FILE]]",
-            "--bind",
             "[[TEMPLATEFLOW_HOME]]"
         ]
     },
@@ -33,5 +31,5 @@
         "TEMPLATEFLOW_HOME": "Path to the directory where TemplateFlow will store templates (can be empty)"
     },
     "PIPELINE_TYPE": "extraction",
-    "SCHEMA_VERSION": "1"
+    "SCHEMA_VERSION": "1.0"
 }

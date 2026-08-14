@@ -184,7 +184,6 @@
             "description": "any value in the .bval file less than this will be considered a b=0 image. Current default threshold = 100; this threshold can be lowered or increased. Note, setting this too high can result in inaccurate results.",
             "type": "Number",
             "optional": true,
-            "default-value": 100,
             "command-line-flag": "--b0-threshold",
             "value-key": "[B0_THRESHOLD]"
         },
