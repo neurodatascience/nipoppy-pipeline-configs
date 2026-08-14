@@ -35,6 +35,8 @@ def pipeline_variables(tmp_path: Path) -> dict[str, str]:
         "DCM2BIDS_CONFIG_FILE": str(tmp_path / "dcm2bids_config.json"),
         "FREESURFER_LICENSE_FILE": str(tmp_path / "freesurfer_license.txt"),
         "TEMPLATEFLOW_HOME": str(tmp_path / "templateflow"),
+        "QSIPREP_VERSION": "1.0.2",
+        "FREESURFER_VERSION": "7.3.2",
     }
 
 

@@ -41,6 +41,8 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
         ("qsiprep", "0.23.0", "default"),
         ("qsiprep", "1.0.1", "default"),
         ("qsiprep", "1.0.2", "default"),
+        ("qsirecon", "1.1.1", "dsi_studio_autotrack"),
+        ("qsirecon", "1.1.1", "mrtrix_multishell_msmt_ACT-hsvs"),
     ),
     PipelineTypeEnum.EXTRACTION: (
         ("fs_stats", "0.2.1", "default"),
