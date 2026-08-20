@@ -90,7 +90,12 @@
             "type": "String",
             "optional": true,
             "command-line-flag": "--subject-anatomical-reference",
-            "value-key": "[SUBJECT_ANATOMICAL_REFERENCE]"
+            "value-key": "[SUBJECT_ANATOMICAL_REFERENCE]",
+            "value-choices": [
+                "first-alphabetically",
+                "unbiased",
+                "sessionwise"
+            ]
         },
         {
             "name": "nprocs",
