@@ -35,6 +35,8 @@ def pipeline_variables(tmp_path: Path) -> dict[str, str]:
         "DCM2BIDS_CONFIG_FILE": str(tmp_path / "dcm2bids_config.json"),
         "FREESURFER_LICENSE_FILE": str(tmp_path / "freesurfer_license.txt"),
         "TEMPLATEFLOW_HOME": str(tmp_path / "templateflow"),
+        "QSIPREP_VERSION": "1.0.2",
+        "FREESURFER_VERSION": "7.3.2",
     }
 
 
@@ -108,8 +110,18 @@ def test_descriptors(fpath_descriptor: Path):
     else:
         assert command_line.startswith("python [SCRIPT_PATH]"), str(fpath_descriptor)
 
+    for input_ in descriptor.get("inputs", []):
+        assert "default-value" not in input_, str(fpath_descriptor)
+
     with pytest.raises(KeyError):
         descriptor["custom"]["nipoppy"], str(fpath_descriptor)
+
+
+@pytest.mark.parametrize("fpath_config", DPATH_PIPELINES.glob("*/*-*/config.json"))
+def test_bind_paths_in_configs(fpath_config: Path):
+    assert (
+        "--bind" not in fpath_config.read_text()
+    ), f"--bind arg found in {fpath_config}, should use BIND_ARGS instead"
 
 
 @pytest.mark.parametrize(

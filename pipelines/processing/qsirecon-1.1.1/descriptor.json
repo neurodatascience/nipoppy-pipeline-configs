@@ -1,13 +1,13 @@
 {
     "name": "qsirecon",
     "description": "qsirecon",
-    "tool-version": "1.1.0",
+    "tool-version": "1.1.1",
     "schema-version": "0.5",
-    "command-line": "qsirecon [INPUT_DIR] [OUTPUT_DIR] [ANALYSIS_LEVEL] [PARTICIPANT_LABEL] [SESSION_LABEL] [BIDS_FILTER_FILE] [BIDS_DATABASE_DIR] [NPROCS] [OMP_NTHREADS] [MEM] [LOW_MEM] [USE_PLUGIN] [SLOPPY] [BOILERPLATE_ONLY] [REPORTS_ONLY] [REPORTS_OUTPUT_LEVEL] [INFANT] [PACKAGE] [B0_THRESHOLD] [OUTPUT_RESOLUTION] [RECON_SPEC] [INPUT_TYPE] [FS_SUBJECTS_DIR] [SKIP_ODF_REPORTS] [ATLASES] [FS_LICENSE_FILE] [VERSION] [VERBOSE_COUNT] [WORK_DIR] [RESOURCE_MONITOR] [CONFIG_FILE] [WRITE_GRAPH] [STOP_ON_FIRST_CRASH] [NOTRACK] [DEBUG]",
     "container-image": {
-        "image": "pennlinc/qsirecon:1.1.0",
+        "image": "pennlinc/qsirecon:1.1.1",
         "type": "docker"
     },
+    "command-line": "qsirecon [INPUT_DIR] [OUTPUT_DIR] [ANALYSIS_LEVEL] [PARTICIPANT_LABEL] [SESSION_LABEL] [BIDS_FILTER_FILE] [BIDS_DATABASE_DIR] [NPROCS] [OMP_NTHREADS] [MEM] [LOW_MEM] [USE_PLUGIN] [SLOPPY] [BOILERPLATE_ONLY] [REPORTS_ONLY] [REPORTS_OUTPUT_LEVEL] [INFANT] [PACKAGE] [B0_THRESHOLD] [OUTPUT_RESOLUTION] [RECON_SPEC] [INPUT_TYPE] [FS_SUBJECTS_DIR] [SKIP_ODF_REPORTS] [ATLASES] [FS_LICENSE_FILE] [VERSION] [VERBOSE_COUNT] [WORK_DIR] [RESOURCE_MONITOR] [CONFIG_FILE] [WRITE_GRAPH] [STOP_ON_FIRST_CRASH] [NOTRACK] [DEBUG]",
     "inputs": [
         {
             "name": "input_dir",
@@ -149,7 +149,7 @@
         {
             "name": "reports_output_level",
             "id": "reports_output_level",
-            "description": "Where should the html reports be writen? By default 'root' will write them ot the --output-dir. Other options will write them to subject or session directory",
+            "description": "Where should the html reports be written? By default 'root' will write them to the --output-dir. Other options will write them to subject or session directory",
             "type": "String",
             "optional": true,
             "command-line-flag": "--reports-output-level",
@@ -192,7 +192,7 @@
             "id": "output_resolution",
             "description": "the isotropic voxel size in mm the data will be resampled to after preprocessing. If set to a lower value than the original voxel size, your data will be upsampled using BSpline interpolation.",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "command-line-flag": "--output-resolution",
             "value-key": "[OUTPUT_RESOLUTION]"
         },
@@ -215,27 +215,8 @@
             "value-key": "[RECON_SPEC]",
             "value-choices": [
                 "amico_noddi",
-                "csdsi_3dshore",
-                "dipy_3dshore",
-                "dipy_dki",
-                "dipy_mapmri",
-                "dsi_studio_auto_track",
-                "dsi_studio_gqi",
-                "hbcd_scalar_maps",
-                "mrtrix_multishell_msmt_ACT-fast",
-                "mrtrix_multishell_msmt_ACT-hsvs",
-                "mrtrix_multishell_msmt_noACT",
-                "mrtrix_multishell_msmt_pyafq_tractometry",
-                "mrtrix_singleshell_ss3t_ACT-fast",
-                "mrtrix_singleshell_ss3t_ACT-hsvs",
-                "mrtrix_singleshell_ss3t_noACT",
-                "multishell_scalarfest",
-                "pyafq_tractometry",
-                "reorient_fslstd",
-                "ss3t_fod_autotrack",
-                "test_scalar_maps",
-                "test_workflow",
-                "TORTOISE"
+                "dsi_studio_autotrack",
+                "mrtrix_multishell_msmt_ACT-hsvs"
             ]
         },
         {
@@ -284,7 +265,8 @@
                 "AICHA384Ext",
                 "Brainnetome246Ext",
                 "Gordon333Ext",
-                "4S"
+                "4S",
+                "4S156Parcels"
             ]
         },
         {
