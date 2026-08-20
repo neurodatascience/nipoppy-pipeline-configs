@@ -1,11 +1,11 @@
 {
   "name": "qsiprep",
   "description": "qsiprep",
-  "tool-version": "1.0.2",
+  "tool-version": "26.0.0",
   "schema-version": "0.5",
-  "command-line": "qsiprep [BIDS_DIR] [OUTPUT_DIR] [ANALYSIS_LEVEL] [SKIP_BIDS_VALIDATION] [PARTICIPANT_LABEL] [SESSION_ID] [BIDS_FILTER_FILE] [BIDS_DATABASE_DIR] [SUBJECT_ANATOMICAL_REFERENCE] [NPROCS] [OMP_NTHREADS] [MEM] [LOW_MEM] [USE_PLUGIN] [SLOPPY] [ANAT_ONLY] [DWI_ONLY] [BOILERPLATE_ONLY] [REPORTS_ONLY] [IGNORE] [INFANT] [LONGITUDINAL] [SKIP_ANAT_BASED_SPATIAL_NORMALIZATION] [ANAT_MODALITY] [B0_THRESHOLD] [DWI_DENOISE_WINDOW] [DENOISE_METHOD] [UNRINGING_METHOD] [DWI_NO_BIASCORR] [B1_BIASCORRECT_STAGE] [NO_B0_HARMONIZATION] [DENOISE_AFTER_COMBINING] [SEPARATE_ALL_DWIS] [DISTORTION_GROUP_MERGE] [ANATOMICAL_TEMPLATE] [OUTPUT_RESOLUTION] [B0_TO_T1W_TRANSFORM] [INTRAMODAL_TEMPLATE_ITERS] [INTRAMODAL_TEMPLATE_TRANSFORM] [FS_LICENSE_FILE] [B0_MOTION_CORR_TO] [HMC_TRANSFORM] [HMC_MODEL] [EDDY_CONFIG] [SHORELINE_ITERS] [PEPOLAR_METHOD] [FMAP_BSPLINE] [FMAP_NO_DEMEAN] [USE_SYN_SDC] [FORCE_SYN] [VERSION] [VERBOSE_COUNT] [WORK_DIR] [RESOURCE_MONITOR] [CONFIG_FILE] [WRITE_GRAPH] [STOP_ON_FIRST_CRASH] [NOTRACK] [DEBUG]",
+  "command-line": "qsiprep [BIDS_DIR] [OUTPUT_DIR] [ANALYSIS_LEVEL] [SKIP_BIDS_VALIDATION] [PARTICIPANT_LABEL] [BIDS_FILTER_FILE] [BIDS_DATABASE_DIR] [SUBJECT_ANATOMICAL_REFERENCE] [NPROCS] [OMP_NTHREADS] [MEM] [LOW_MEM] [USE_PLUGIN] [SLOPPY] [ANAT_ONLY] [DWI_ONLY] [BOILERPLATE_ONLY] [REPORTS_ONLY] [IGNORE] [INFANT] [LONGITUDINAL] [SKIP_ANAT_BASED_SPATIAL_NORMALIZATION] [ANAT_MODALITY] [B0_THRESHOLD] [DWI_DENOISE_WINDOW] [DENOISE_METHOD] [UNRINGING_METHOD] [B1_BIASCORRECT_STAGE] [NO_B0_HARMONIZATION] [DENOISE_AFTER_COMBINING] [SEPARATE_ALL_DWIS] [DISTORTION_GROUP_MERGE] [ANATOMICAL_TEMPLATE] [OUTPUT_RESOLUTION] [B0_TO_T1W_TRANSFORM] [INTRAMODAL_TEMPLATE_ITERS] [INTRAMODAL_TEMPLATE_TRANSFORM] [FS_LICENSE_FILE] [B0_MOTION_CORR_TO] [HMC_TRANSFORM] [HMC_MODEL] [EDDY_CONFIG] [SHORELINE_ITERS] [PEPOLAR_METHOD] [FMAP_BSPLINE] [FMAP_NO_DEMEAN] [USE_SYN_SDC] [FORCE_SYN] [VERSION] [VERBOSE_COUNT] [WORK_DIR] [RESOURCE_MONITOR] [CONFIG_FILE] [WRITE_GRAPH] [STOP_ON_FIRST_CRASH] [NOTRACK] [DEBUG]",
   "container-image": {
-        "image": "pennlinc/qsiprep:1.0.2",
+        "image": "pennlinc/qsiprep:26.0.0",
         "type": "docker"
   },
   "inputs": [
@@ -54,16 +54,6 @@
       "optional": true,
       "command-line-flag": "--participant-label",
       "value-key": "[PARTICIPANT_LABEL]"
-    },
-    {
-      "name": "session_id",
-      "id": "session_id",
-      "description": "A space delimited list of session identifiers or a single identifier (the ses- prefix can be removed)",
-      "type": "String",
-      "list": true,
-      "optional": true,
-      "command-line-flag": "--session-id",
-      "value-key": "[SESSION_ID]"
     },
     {
       "name": "bids_filter_file",
@@ -193,8 +183,10 @@
       "value-key": "[IGNORE]",
       "value-choices": [
         "fieldmaps",
+        "sbref",
         "t2w",
-        "phase"
+        "flair",
+        "fmap-jacobian"
       ]
     },
     {
@@ -283,15 +275,6 @@
         "mrdegibbs",
         "rpg"
       ]
-    },
-    {
-      "name": "dwi_no_biascorr",
-      "id": "dwi_no_biascorr",
-      "description": "DEPRECATED: see --b1-biascorrect-stage",
-      "type": "Flag",
-      "optional": true,
-      "command-line-flag": "--dwi-no-biascorr",
-      "value-key": "[DWI_NO_BIASCORR]"
     },
     {
       "name": "b1_biascorrect_stage",

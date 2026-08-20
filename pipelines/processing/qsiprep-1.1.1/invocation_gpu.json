@@ -16,5 +16,6 @@
     "mem": "8G",
     "stop_on_first_crash": true,
     "anat_modality": "T1w",
-    "bids_filter_file": "[[NIPOPPY_DPATH_PIPELINES]]/processing/qsiprep-1.0.1/bids_filter.json"
+    "bids_filter_file": "[[NIPOPPY_DPATH_PIPELINES]]/processing/qsiprep-1.1.1/bids_filter.json",
+    "eddy_config" : "[[NIPOPPY_DPATH_PIPELINES]]/processing/qsiprep-1.1.1/eddy_params.json"
 }
