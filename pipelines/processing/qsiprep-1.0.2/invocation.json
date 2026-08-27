@@ -1,11 +1,12 @@
 {
     "bids_dir": "[[NIPOPPY_DPATH_BIDS]]",
-    "output_dir": "[[NIPOPPY_DPATH_PIPELINE_OUTPUT]]/[[NIPOPPY_BIDS_SESSION_ID]]",
+    "output_dir": "[[NIPOPPY_DPATH_PIPELINE_OUTPUT]]",
     "analysis_level": "participant",
     "participant_label": [
         "[[NIPOPPY_PARTICIPANT_ID]]"
     ],
     "bids_database_dir": "[[NIPOPPY_DPATH_PIPELINE_BIDS_DB]]",
+    "subject_anatomical_reference": "sessionwise",
     "output_resolution": 1.0,
     "work_dir": "[[NIPOPPY_DPATH_PIPELINE_WORK]]",
     "skip_bids_validation": true,
@@ -14,5 +15,6 @@
     "nprocs": 8,
     "mem": "8G",
     "stop_on_first_crash": true,
-    "anat_modality": "T1w"
+    "anat_modality": "T1w",
+    "bids_filter_file": "[[NIPOPPY_DPATH_PIPELINES]]/processing/qsiprep-1.0.2/bids_filter.json"
 }
