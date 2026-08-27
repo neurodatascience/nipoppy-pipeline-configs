@@ -1,8 +1,8 @@
 """Global variables and fixtures for tests."""
 
 import itertools
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, Tuple
 
 import pytest
 import pytest_mock
@@ -15,7 +15,7 @@ DPATH_TESTS = Path(__file__).parent
 DPATH_PIPELINES = DPATH_TESTS.parent / "pipelines"
 FPATH_CONFIG = DPATH_TESTS / "data" / "global_config.json"
 
-PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = {
+PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[tuple[str, str, str]]] = {
     PipelineTypeEnum.BIDSIFICATION: (
         ("heudiconv", "0.12.2", "prepare"),
         ("heudiconv", "0.12.2", "convert"),
@@ -31,13 +31,17 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
     ),
     PipelineTypeEnum.PROCESSING: (
         ("bids-validator", "2.0.3", "default"),  # no tracker
-        ("freesurfer", "7.3.2", "default"),  # tracker only
+        ("deepprep", "25.1.0", "default"),
         ("dmri-freewater", "2.0.0", "default"),
-        ("freesurfer", "6.0.1", "default"),  # tracker only
         ("fmriprep", "20.2.7", "default"),
         ("fmriprep", "23.1.3", "default"),
         ("fmriprep", "24.1.1", "default"),
+        ("fmriprep", "25.2.5", "default"),
+        ("freesurfer", "7.3.2", "default"),  # tracker only
+        ("freesurfer", "6.0.1", "default"),  # tracker only
         ("mriqc", "23.1.0", "default"),
+        ("mriqc", "24.0.2", "default"),
+        ("petprep", "0.0.10", "default"),
         ("qsiprep", "0.23.0", "default"),
         ("qsiprep", "1.0.1", "default"),
         ("qsiprep", "1.0.2", "default"),
@@ -45,6 +49,7 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
         ("qsiprep", "26.0.0", "default"),
         ("qsirecon", "1.1.1", "dsi_studio_autotrack"),
         ("qsirecon", "1.1.1", "mrtrix_multishell_msmt_ACT-hsvs"),
+        ("xcp_d", "26.1.1", "default"),
     ),
     PipelineTypeEnum.EXTRACTION: (
         ("fs_stats", "0.2.1", "default"),
@@ -53,7 +58,7 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[Tuple[str, str, str]]] = 
     ),
 }
 
-PIPELINE_INFO_AND_TYPE: list[Tuple[Tuple[str, str, str], PipelineTypeEnum]] = (
+PIPELINE_INFO_AND_TYPE: list[tuple[tuple[str, str, str], PipelineTypeEnum]] = (
     itertools.chain.from_iterable(
         [(pipeline_info, pipeline_type) for pipeline_info in pipeline_infos]
         for pipeline_type, pipeline_infos in PIPELINE_INFO_BY_TYPE.items()
