@@ -1,0 +1,35 @@
+{
+    "NAME": "petprep",
+    "VERSION": "0.0.10",
+    "CONTAINER_INFO": {
+        "FILE": "[[NIPOPPY_DPATH_CONTAINERS]]/[[PIPELINE_NAME]]_[[PIPELINE_VERSION]].sif",
+        "URI": "docker://nipreps/[[PIPELINE_NAME]]:[[PIPELINE_VERSION]]"
+    },
+    "CONTAINER_CONFIG": {
+        "ENV_VARS": {
+            "TEMPLATEFLOW_HOME": "[[TEMPLATEFLOW_HOME]]"
+        },
+        "BIND_PATHS": [
+            "[[FREESURFER_LICENSE_FILE]]",
+            "[[TEMPLATEFLOW_HOME]]",
+            "[[NIPOPPY_DPATH_DERIVATIVES]]/freesurfer/7.4.1/output/[[NIPOPPY_BIDS_SESSION_ID]]"
+        ]
+    },
+    "STEPS": [
+        {
+            "INVOCATION_FILE": "invocation.json",
+            "DESCRIPTOR_FILE": "descriptor.json",
+            "ANALYSIS_LEVEL": "participant_session",
+            "TRACKER_CONFIG_FILE": "tracker.json",
+            "HPC_CONFIG_FILE": "hpc.json",
+            "GENERATE_PYBIDS_DATABASE": true,
+            "PYBIDS_IGNORE_FILE": null
+        }
+    ],
+    "VARIABLES": {
+        "FREESURFER_LICENSE_FILE": "Path to FreeSurfer license file",
+        "TEMPLATEFLOW_HOME": "Path to the directory where TemplateFlow will store templates (can be empty)"
+    },
+    "PIPELINE_TYPE": "processing",
+    "SCHEMA_VERSION": "1.0"
+}

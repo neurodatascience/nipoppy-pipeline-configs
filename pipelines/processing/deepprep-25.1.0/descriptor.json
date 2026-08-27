@@ -1,0 +1,248 @@
+{
+    "name": "deepprep",
+    "description": "Deep learning-based neuroimaging preprocessing pipeline for structural and functional MRI data",
+    "tool-version": "25.1.0",
+    "schema-version": "0.5",
+    "command-line": "deepprep-docker [BIDS_DIR] [OUTPUT_DIR] [ANALYSIS_LEVEL] [BOLD_TASK_TYPE] [FS_LICENSE_FILE] [PARTICIPANT_LABEL] [SUBJECTS_DIR] [SKIP_BIDS_VALIDATION] [ANAT_ONLY] [BOLD_ONLY] [BOLD_SDC] [BOLD_CONFOUNDS] [BOLD_SKIP_FRAME] [BOLD_CIFTI] [BOLD_SURFACE_SPACES] [BOLD_VOLUME_SPACE] [BOLD_VOLUME_RES] [DEVICE] [CPUS] [MEMORY] [IGNORE_ERROR] [RESUME]",
+    "container-image": {
+        "type": "docker",
+        "image": "pbfslab/deepprep:25.1.0",
+        "entrypoint": true
+    },
+    "inputs": [
+        {
+            "id": "bids_dir",
+            "name": "bids_dir",
+            "type": "String",
+            "value-key": "[BIDS_DIR]",
+            "description": "The root folder of a BIDS valid dataset"
+        },
+        {
+            "id": "output_dir",
+            "name": "output_dir",
+            "type": "String",
+            "value-key": "[OUTPUT_DIR]",
+            "description": "The output path for the outcomes of preprocessing and visual reports"
+        },
+        {
+            "id": "analysis_level",
+            "name": "analysis_level",
+            "type": "String",
+            "value-key": "[ANALYSIS_LEVEL]",
+            "description": "Processing stage to be run",
+            "value-choices": [
+                "participant"
+            ]
+        },
+        {
+            "id": "bold_task_type",
+            "name": "bold_task_type",
+            "type": "String",
+            "value-key": "[BOLD_TASK_TYPE]",
+            "description": "A space delimited list of task identifiers to be processed",
+            "optional": true,
+            "list": true,
+            "command-line-flag": "--bold_task_type",
+            "command-line-flag-separator": " "
+        },
+        {
+            "id": "fs_license_file",
+            "name": "fs_license_file",
+            "type": "File",
+            "value-key": "[FS_LICENSE_FILE]",
+            "description": "Path to FreeSurfer license file. Highly recommended to provide your own FreeSurfer license",
+            "optional": true,
+            "command-line-flag": "--fs_license_file"
+        },
+        {
+            "id": "participant_label",
+            "name": "participant_label",
+            "type": "String",
+            "value-key": "[PARTICIPANT_LABEL]",
+            "description": "A space delimited list of participant identifiers or a single identifier (the sub- prefix can be removed)",
+            "optional": true,
+            "list": true,
+            "command-line-flag": "--participant_label",
+            "command-line-flag-separator": " "
+        },
+        {
+            "id": "subjects_dir",
+            "name": "subjects_dir",
+            "type": "String",
+            "value-key": "[SUBJECTS_DIR]",
+            "description": "Path to the subjects directory for FreeSurfer outputs",
+            "optional": true,
+            "command-line-flag": "--subjects_dir"
+        },
+        {
+            "id": "skip_bids_validation",
+            "name": "skip_bids_validation",
+            "type": "Flag",
+            "value-key": "[SKIP_BIDS_VALIDATION]",
+            "description": "Assume the input dataset is BIDS compliant and skip the validation",
+            "optional": true,
+            "command-line-flag": "--skip_bids_validation"
+        },
+        {
+            "id": "anat_only",
+            "name": "anat_only",
+            "type": "Flag",
+            "value-key": "[ANAT_ONLY]",
+            "description": "Run only anatomical processing",
+            "optional": true,
+            "command-line-flag": "--anat_only"
+        },
+        {
+            "id": "bold_only",
+            "name": "bold_only",
+            "type": "Flag",
+            "value-key": "[BOLD_ONLY]",
+            "description": "Run only functional processing",
+            "optional": true,
+            "command-line-flag": "--bold_only"
+        },
+        {
+            "id": "bold_sdc",
+            "name": "bold_sdc",
+            "type": "Flag",
+            "value-key": "[BOLD_SDC]",
+            "description": "Enable BOLD susceptibility distortion correction",
+            "optional": true,
+            "command-line-flag": "--bold_sdc"
+        },
+        {
+            "id": "bold_confounds",
+            "name": "bold_confounds",
+            "type": "Flag",
+            "value-key": "[BOLD_CONFOUNDS]",
+            "description": "Enable BOLD confound estimation",
+            "optional": true,
+            "command-line-flag": "--bold_confounds"
+        },
+        {
+            "id": "bold_skip_frame",
+            "name": "bold_skip_frame",
+            "type": "Number",
+            "value-key": "[BOLD_SKIP_FRAME]",
+            "description": "Number of initial frames to discard from BOLD data",
+            "optional": true,
+            "integer": true,
+            "command-line-flag": "--bold_skip_frame"
+        },
+        {
+            "id": "bold_cifti",
+            "name": "bold_cifti",
+            "type": "Flag",
+            "value-key": "[BOLD_CIFTI]",
+            "description": "Generate CIFTI grayordinates output",
+            "optional": true,
+            "command-line-flag": "--bold_cifti"
+        },
+        {
+            "id": "bold_surface_spaces",
+            "name": "bold_surface_spaces",
+            "type": "String",
+            "value-key": "[BOLD_SURFACE_SPACES]",
+            "description": "A space delimited list of surface spaces for BOLD output (e.g., fsnative fsaverage fsaverage6)",
+            "optional": true,
+            "list": true,
+            "command-line-flag": "--bold_surface_spaces",
+            "command-line-flag-separator": " "
+        },
+        {
+            "id": "bold_volume_space",
+            "name": "bold_volume_space",
+            "type": "String",
+            "value-key": "[BOLD_VOLUME_SPACE]",
+            "description": "Target volume space for BOLD output",
+            "optional": true,
+            "command-line-flag": "--bold_volume_space",
+            "value-choices": [
+                "None",
+                "MNI152NLin6Asym",
+                "MNI152NLin2009cAsym"
+            ]
+        },
+        {
+            "id": "bold_volume_res",
+            "name": "bold_volume_res",
+            "type": "String",
+            "value-key": "[BOLD_VOLUME_RES]",
+            "description": "Target volume resolution for BOLD output",
+            "optional": true,
+            "command-line-flag": "--bold_volume_res"
+        },
+        {
+            "id": "device",
+            "name": "device",
+            "type": "String",
+            "value-key": "[DEVICE]",
+            "description": "Compute device to use: auto, cpu, or GPU index number",
+            "optional": true,
+            "command-line-flag": "--device",
+            "value-choices": [
+                "auto",
+                "cpu",
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7"
+            ]
+        },
+        {
+            "id": "cpus",
+            "name": "cpus",
+            "type": "Number",
+            "value-key": "[CPUS]",
+            "description": "Number of CPUs to use for parallel processing",
+            "optional": true,
+            "integer": true,
+            "command-line-flag": "--cpus"
+        },
+        {
+            "id": "memory",
+            "name": "memory",
+            "type": "Number",
+            "value-key": "[MEMORY]",
+            "description": "Amount of memory in GB to use for processing",
+            "optional": true,
+            "integer": true,
+            "command-line-flag": "--memory"
+        },
+        {
+            "id": "ignore_error",
+            "name": "ignore_error",
+            "type": "Flag",
+            "value-key": "[IGNORE_ERROR]",
+            "description": "Continue processing even if errors occur",
+            "optional": true,
+            "command-line-flag": "--ignore_error"
+        },
+        {
+            "id": "resume",
+            "name": "resume",
+            "type": "Flag",
+            "value-key": "[RESUME]",
+            "description": "Resume a previously interrupted processing run",
+            "optional": true,
+            "command-line-flag": "--resume"
+        }
+    ],
+    "groups": [
+        {
+            "id": "processing_mode",
+            "name": "Processing mode",
+            "description": "Mutually exclusive processing modes for anatomical and functional data",
+            "members": [
+                "anat_only",
+                "bold_only"
+            ],
+            "mutually-exclusive": true
+        }
+    ],
+    "tags": {}
+}

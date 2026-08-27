@@ -1,0 +1,13 @@
+{
+    "bids_dir": "[[NIPOPPY_DPATH_BIDS]]",
+    "output_dir": "[[NIPOPPY_DPATH_PIPELINE_OUTPUT]]",
+    "analysis_level": "participant",
+    "bold_task_type": [
+        "rest"
+    ],
+    "fs_license_file": "[[FREESURFER_LICENSE_FILE]]",
+    "participant_label": [
+        "[[NIPOPPY_PARTICIPANT_ID]]"
+    ],
+    "skip_bids_validation": true
+}
