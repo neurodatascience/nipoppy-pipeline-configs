@@ -1,6 +1,5 @@
 """Test pipeline configurations."""
 
-import io
 import json
 import re
 import warnings
@@ -44,8 +43,7 @@ def _install_pipeline(
     layout: DatasetLayout,
     pipeline_name: str,
     pipeline_version: str,
-    monkeypatch: pytest.MonkeyPatch,
-    pipeline_variables: dict[str, str] = None,
+    pipeline_variables: dict[str, str] | None = None,
     pipeline_type: PipelineTypeEnum = PipelineTypeEnum.PROCESSING,
 ):
     if pipeline_variables is None:
@@ -66,8 +64,9 @@ def _install_pipeline(
                 / f"{info.NAME}-{info.VERSION}"
             )
     for path in paths_to_install:
-        monkeypatch.setattr("sys.stdin", io.StringIO("n"))  # do not install container
-        installer = PipelineInstallWorkflow(dpath_root=layout.dpath_root, source=path)
+        installer = PipelineInstallWorkflow(
+            dpath_root=layout.dpath_root, source=path, skip_container=True
+        )
         installer.run()
 
     # set pipeline variables
