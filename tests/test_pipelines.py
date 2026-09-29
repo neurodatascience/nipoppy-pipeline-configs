@@ -183,7 +183,6 @@ def test_runner(
     pipeline_type: PipelineTypeEnum,
     pipeline_variables: dict[str, str],
     single_subject_dataset,
-    monkeypatch: pytest.MonkeyPatch,
 ):
     """Test that pipelines run successfully in "simulate" mode."""
     pipeline_name, pipeline_version, pipeline_step = pipeline_info
@@ -195,7 +194,6 @@ def test_runner(
         layout=layout,
         pipeline_name=pipeline_name,
         pipeline_version=pipeline_version,
-        monkeypatch=monkeypatch,
         pipeline_variables=pipeline_variables,
         pipeline_type=pipeline_type,
     )
@@ -240,7 +238,6 @@ def test_tracker(
     pipeline_info,
     single_subject_dataset,
     pipeline_variables: dict[str, str],
-    monkeypatch: pytest.MonkeyPatch,
 ):
     pipeline_name, pipeline_version, pipeline_step = pipeline_info
     layout, participant_id, session_id = single_subject_dataset
@@ -251,7 +248,6 @@ def test_tracker(
         layout=layout,
         pipeline_name=pipeline_name,
         pipeline_version=pipeline_version,
-        monkeypatch=monkeypatch,
         pipeline_variables=pipeline_variables,
         pipeline_type=PipelineTypeEnum.PROCESSING,
     )
