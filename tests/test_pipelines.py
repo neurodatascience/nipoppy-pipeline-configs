@@ -1,6 +1,5 @@
 """Test pipeline configurations."""
 
-import io
 import json
 import re
 import warnings
@@ -44,8 +43,7 @@ def _install_pipeline(
     layout: DatasetLayout,
     pipeline_name: str,
     pipeline_version: str,
-    monkeypatch: pytest.MonkeyPatch,
-    pipeline_variables: dict[str, str] = None,
+    pipeline_variables: dict[str, str] | None = None,
     pipeline_type: PipelineTypeEnum = PipelineTypeEnum.PROCESSING,
 ):
     if pipeline_variables is None:
@@ -66,8 +64,9 @@ def _install_pipeline(
                 / f"{info.NAME}-{info.VERSION}"
             )
     for path in paths_to_install:
-        monkeypatch.setattr("sys.stdin", io.StringIO("n"))  # do not install container
-        installer = PipelineInstallWorkflow(dpath_root=layout.dpath_root, source=path)
+        installer = PipelineInstallWorkflow(
+            dpath_root=layout.dpath_root, source=path, skip_container=True
+        )
         installer.run()
 
     # set pipeline variables
@@ -184,7 +183,6 @@ def test_runner(
     pipeline_type: PipelineTypeEnum,
     pipeline_variables: dict[str, str],
     single_subject_dataset,
-    monkeypatch: pytest.MonkeyPatch,
 ):
     """Test that pipelines run successfully in "simulate" mode."""
     pipeline_name, pipeline_version, pipeline_step = pipeline_info
@@ -196,7 +194,6 @@ def test_runner(
         layout=layout,
         pipeline_name=pipeline_name,
         pipeline_version=pipeline_version,
-        monkeypatch=monkeypatch,
         pipeline_variables=pipeline_variables,
         pipeline_type=pipeline_type,
     )
@@ -241,7 +238,6 @@ def test_tracker(
     pipeline_info,
     single_subject_dataset,
     pipeline_variables: dict[str, str],
-    monkeypatch: pytest.MonkeyPatch,
 ):
     pipeline_name, pipeline_version, pipeline_step = pipeline_info
     layout, participant_id, session_id = single_subject_dataset
@@ -252,7 +248,6 @@ def test_tracker(
         layout=layout,
         pipeline_name=pipeline_name,
         pipeline_version=pipeline_version,
-        monkeypatch=monkeypatch,
         pipeline_variables=pipeline_variables,
         pipeline_type=PipelineTypeEnum.PROCESSING,
     )
