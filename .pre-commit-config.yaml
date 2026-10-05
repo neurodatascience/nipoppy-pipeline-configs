@@ -15,16 +15,16 @@ repos:
         args: [--autofix, --indent, "4", --no-sort-keys]
     -   id: trailing-whitespace
 -   repo: https://github.com/pycqa/isort
-    rev: 9.0.1
+    rev: 9.0.2
     hooks:
     -   id: isort
         args: [--profile, black]
 -   repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 26.5.1
+    rev: 26.10.0
     hooks:
     -   id: black
 -   repo: https://github.com/pyCQA/flake8
-    rev: 7.3.0
+    rev: 7.4.1
     hooks:
     -   id: flake8
         args: [--verbose, --config, .flake8]
