@@ -36,6 +36,7 @@ def pipeline_variables(tmp_path: Path) -> dict[str, str]:
         "FREESURFER_LICENSE_FILE": str(tmp_path / "freesurfer_license.txt"),
         "TEMPLATEFLOW_HOME": str(tmp_path / "templateflow"),
         "QSIPREP_VERSION": "1.0.2",
+        "FMRIPREP_VERSION": "25.2.5",
         "FREESURFER_VERSION": "7.3.2",
     }
 
@@ -45,7 +46,7 @@ def _install_pipeline(
     pipeline_name: str,
     pipeline_version: str,
     monkeypatch: pytest.MonkeyPatch,
-    pipeline_variables: dict[str, str] = None,
+    pipeline_variables: dict[str, str] | None = None,
     pipeline_type: PipelineTypeEnum = PipelineTypeEnum.PROCESSING,
 ):
     if pipeline_variables is None:
@@ -132,14 +133,12 @@ def test_bids_pipeline_configs(fpath_config: Path):
         **json.loads(fpath_config.read_text())
     )
     if not any(
-        [step.ANALYSIS_LEVEL == "participant_session" for step in pipeline_config.STEPS]
+        step.ANALYSIS_LEVEL == "participant_session" for step in pipeline_config.STEPS
     ):
         pytest.xfail(
-            (
-                "UPDATE_STATUS cannot be enabled because no steps are at "
-                f"participant-session level for pipeline {pipeline_config.NAME}"
-                f" {pipeline_config.VERSION}"
-            )
+            "UPDATE_STATUS cannot be enabled because no steps are at "
+            f"participant-session level for pipeline {pipeline_config.NAME}"
+            f" {pipeline_config.VERSION}"
         )
     count = sum([step.UPDATE_STATUS for step in pipeline_config.STEPS])
     assert count == 1, (
@@ -160,10 +159,8 @@ def test_extraction_invocation(fpath_invocation: Path):
         config = ExtractionPipelineConfig(**json.loads(fpath_config.read_text()))
         if config.CONTAINER_INFO == ContainerInfo():
             raise RuntimeError(
-                (
-                    "Expected script_path in invocation since the pipeline "
-                    f"doesn't use a container: {invocation}"
-                )
+                "Expected script_path in invocation since the pipeline "
+                f"doesn't use a container: {invocation}"
             )
         else:
             pytest.xfail(

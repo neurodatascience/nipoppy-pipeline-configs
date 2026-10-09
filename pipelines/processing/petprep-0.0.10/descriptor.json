@@ -1,0 +1,862 @@
+{
+    "schema-version": "0.5",
+    "name": "petprep",
+    "description": "PETPrep: PET PREProcessing workflows",
+    "tool-version": "0.0.10",
+    "container-image": {
+        "image": "nipreps/petprep:0.0.10",
+        "type": "docker"
+    },
+    "command-line": "petprep [BIDS_DIR] [OUTPUT_DIR] [ANALYSIS_LEVEL] [SKIP_BIDS_VALIDATION] [PARTICIPANT_LABEL] [SESSION_LABEL] [TRACER_LABEL] [REC_LABEL] [RUN_LABEL] [COMBINE_RUNS] [SUBJECT_ANATOMICAL_REFERENCE] [TASK_ID] [BIDS_FILTER_FILE] [DERIVATIVES] [BIDS_DATABASE_DIR] [NPROCS] [OMP_NTHREADS] [MEM] [LOW_MEM] [USE_PLUGIN] [SLOPPY] [ANAT_ONLY] [LEVEL] [BOILERPLATE_ONLY] [REPORTS_ONLY] [IGNORE] [OUTPUT_SPACES] [LONGITUDINAL] [PET2ANAT_DOF] [PET2ANAT_METHOD] [PET2ANAT_NO_ANAT_CROP] [ANATREF] [FORCE_BBR] [FORCE_NO_BBR] [RANDOM_SEED] [OUTPUT_LAYOUT] [AGGREGATE_SESSION_REPORTS] [MEDIAL_SURFACE_NAN] [PROJECT_GOODVOXELS] [MD_ONLY_BOILERPLATE] [CIFTI_OUTPUT] [NO_MSM] [RETURN_ALL_COMPONENTS] [FD_SPIKE_THRESHOLD] [DVARS_SPIKE_THRESHOLD] [SKULL_STRIP_TEMPLATE] [SKULL_STRIP_FIXED_SEED] [SKULL_STRIP_T1W] [FS_LICENSE_FILE] [SUBMM_RECON] [[NO_SUBMM_RECON]] [FS_SUBJECTS_DIR] [RUN_RECONALL] [FS_NO_RESUME] [HMC_FWHM] [HMC_START_TIME] [HMC_INIT_FRAME] [HMC_INIT_FRAME_FIX] [HMC_MEMORY_POLICY] [HMC_OFF] [PETREF] [SEG] [REF_MASK_NAME] [REF_MASK_INDEX] [PVC_TOOL] [PVC_METHOD] [PVC_PSF] [TRACK_CARBON] [COUNTRY_CODE] [VERBOSE] [WORK_DIR] [CLEAN_WORKDIR] [RESOURCE_MONITOR] [CONFIG_FILE] [WRITE_GRAPH] [STOP_ON_FIRST_CRASH] [NOTRACK] [DEBUG]",
+    "inputs": [
+        {
+            "id": "bids_dir",
+            "type": "String",
+            "value-key": "[BIDS_DIR]",
+            "description": "The root folder of a BIDS valid dataset (sub-XXXXX folders should be found at the top level in this folder).",
+            "name": "bids_dir"
+        },
+        {
+            "id": "output_dir",
+            "type": "File",
+            "value-key": "[OUTPUT_DIR]",
+            "description": "The output path for the outcomes of preprocessing and visual reports",
+            "name": "output_dir"
+        },
+        {
+            "id": "analysis_level",
+            "type": "String",
+            "value-key": "[ANALYSIS_LEVEL]",
+            "description": "Processing stage to be run, only \"participant\" in the case of PETPrep (see BIDS-Apps specification).",
+            "value-choices": [
+                "participant"
+            ],
+            "name": "analysis_level"
+        },
+        {
+            "id": "skip_bids_validation",
+            "type": "Flag",
+            "value-key": "[SKIP_BIDS_VALIDATION]",
+            "description": "Assume the input dataset is BIDS compliant and skip the validation",
+            "optional": true,
+            "command-line-flag": "--skip_bids_validation",
+            "name": "skip_bids_validation"
+        },
+        {
+            "id": "participant_label",
+            "type": "String",
+            "value-key": "[PARTICIPANT_LABEL]",
+            "description": "A space delimited list of participant identifiers or a single identifier (the sub- prefix can be removed)",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--participant-label",
+            "name": "participant_label"
+        },
+        {
+            "id": "session_label",
+            "type": "String",
+            "value-key": "[SESSION_LABEL]",
+            "description": "A space delimited list of session identifiers or a single identifier (the ses- prefix can be removed)",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--session-label",
+            "name": "session_label"
+        },
+        {
+            "id": "tracer_label",
+            "type": "String",
+            "value-key": "[TRACER_LABEL]",
+            "description": "A space delimited list of tracer identifiers or a single identifier (the trc- prefix can be removed)",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--tracer-label",
+            "name": "tracer_label"
+        },
+        {
+            "id": "rec_label",
+            "type": "String",
+            "value-key": "[REC_LABEL]",
+            "description": "A space delimited list of reconstruction identifiers or a single identifier (the rec- prefix can be removed)",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--rec-label",
+            "name": "rec_label"
+        },
+        {
+            "id": "run_label",
+            "type": "String",
+            "value-key": "[RUN_LABEL]",
+            "description": "A space delimited list of run identifiers or a single identifier (the run- prefix can be removed)",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--run-label",
+            "name": "run_label"
+        },
+        {
+            "id": "combine_runs",
+            "type": "Flag",
+            "value-key": "[COMBINE_RUNS]",
+            "description": "Concatenate PET runs within each session before preprocessing. Combined files omit the run entity.",
+            "optional": true,
+            "command-line-flag": "--combine-runs",
+            "name": "combine_runs"
+        },
+        {
+            "id": "subject_anatomical_reference",
+            "type": "String",
+            "value-key": "[SUBJECT_ANATOMICAL_REFERENCE]",
+            "description": "Method to produce the reference anatomical space: \"first-lex\" uses the first T1w image in lexicographical order; \"unbiased\" constructs an unbiased template from all T1w images (previously \"--longitudinal\"); \"sessionwise\" independently processes each session, with multiple runs within a session handled similarly to \"first-lex\". (Default: \"first-lex\")",
+            "optional": true,
+            "command-line-flag": "--subject-anatomical-reference",
+            "value-choices": [
+                "first-lex",
+                "unbiased",
+                "sessionwise"
+            ],
+            "name": "subject_anatomical_reference"
+        },
+        {
+            "id": "task_id",
+            "type": "String",
+            "value-key": "[TASK_ID]",
+            "description": "Select a specific task to be processed",
+            "optional": true,
+            "command-line-flag": "--task-id",
+            "name": "task_id"
+        },
+        {
+            "id": "bids_filter_file",
+            "type": "String",
+            "value-key": "[BIDS_FILTER_FILE]",
+            "description": "A JSON file describing custom BIDS input filters using PyBIDS. For further details, please check out https://petprep.readthedocs.io/en/latest/faq.html#how-do-I-select-only-certain-files-to-be-input-to-PETPrep",
+            "optional": true,
+            "command-line-flag": "--bids-filter-file",
+            "name": "bids_filter_file"
+        },
+        {
+            "id": "derivatives",
+            "type": "String",
+            "value-key": "[DERIVATIVES]",
+            "description": "Search PATH(s) for pre-computed derivatives. These may be provided as named folders (e.g., `--derivatives smriprep=/path/to/smriprep`).",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--derivatives",
+            "name": "derivatives"
+        },
+        {
+            "id": "bids_database_dir",
+            "type": "File",
+            "value-key": "[BIDS_DATABASE_DIR]",
+            "description": "Path to a PyBIDS database folder, for faster indexing (especially useful for large datasets). Will be created if not present.",
+            "optional": true,
+            "command-line-flag": "--bids-database-dir",
+            "name": "bids_database_dir"
+        },
+        {
+            "id": "nprocs",
+            "type": "String",
+            "value-key": "[NPROCS]",
+            "description": "Maximum number of threads across all processes",
+            "optional": true,
+            "command-line-flag": "--nprocs",
+            "name": "nprocs"
+        },
+        {
+            "id": "omp_nthreads",
+            "type": "String",
+            "value-key": "[OMP_NTHREADS]",
+            "description": "Maximum number of threads per-process",
+            "optional": true,
+            "command-line-flag": "--omp-nthreads",
+            "name": "omp_nthreads"
+        },
+        {
+            "id": "mem",
+            "type": "String",
+            "value-key": "[MEM]",
+            "description": "Upper bound memory limit for PETPrep processes",
+            "optional": true,
+            "command-line-flag": "--mem",
+            "name": "mem"
+        },
+        {
+            "id": "low_mem",
+            "type": "Flag",
+            "value-key": "[LOW_MEM]",
+            "description": "Attempt to reduce memory usage (will increase disk usage in working directory)",
+            "optional": true,
+            "command-line-flag": "--low-mem",
+            "name": "low_mem"
+        },
+        {
+            "id": "use_plugin",
+            "type": "String",
+            "value-key": "[USE_PLUGIN]",
+            "description": "Nipype plugin configuration file",
+            "optional": true,
+            "command-line-flag": "--use-plugin",
+            "name": "use_plugin"
+        },
+        {
+            "id": "sloppy",
+            "type": "Flag",
+            "value-key": "[SLOPPY]",
+            "description": "Use low-quality tools for speed - TESTING ONLY",
+            "optional": true,
+            "command-line-flag": "--sloppy",
+            "name": "sloppy"
+        },
+        {
+            "id": "anat_only",
+            "type": "Flag",
+            "value-key": "[ANAT_ONLY]",
+            "description": "Run anatomical workflows only",
+            "optional": true,
+            "command-line-flag": "--anat-only",
+            "name": "anat_only"
+        },
+        {
+            "id": "level",
+            "type": "String",
+            "value-key": "[LEVEL]",
+            "description": "Processing level; may be 'minimal' (nothing that can be recomputed), 'resampling' (recomputable targets that aid in resampling) or 'full' (all target outputs). (Default: \"full\")",
+            "optional": true,
+            "command-line-flag": "--level",
+            "value-choices": [
+                "minimal",
+                "resampling",
+                "full"
+            ],
+            "name": "level"
+        },
+        {
+            "id": "boilerplate_only",
+            "type": "Flag",
+            "value-key": "[BOILERPLATE_ONLY]",
+            "description": "Generate boilerplate only",
+            "optional": true,
+            "command-line-flag": "--boilerplate-only",
+            "name": "boilerplate_only"
+        },
+        {
+            "id": "reports_only",
+            "type": "Flag",
+            "value-key": "[REPORTS_ONLY]",
+            "description": "Only generate reports, don't run workflows. This will only rerun report aggregation, not reportlet generation for specific nodes.",
+            "optional": true,
+            "command-line-flag": "--reports-only",
+            "name": "reports_only"
+        },
+        {
+            "id": "ignore",
+            "type": "String",
+            "value-key": "[IGNORE]",
+            "description": "Ignore selected aspects of the input dataset to disable corresponding parts of the workflow (a space delimited list)",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--ignore",
+            "value-choices": [
+                "t2w",
+                "flair"
+            ],
+            "name": "ignore"
+        },
+        {
+            "id": "output_spaces",
+            "type": "String",
+            "value-key": "[OUTPUT_SPACES]",
+            "description": "Standard and non-standard spaces to resample anatomical and PET images to. Standard spaces may be specified by the form ``<SPACE>[:cohort-<label>][:res-<resolution>][...]``, where ``<SPACE>`` is a keyword designating a spatial reference, and may be followed by optional, colon-separated parameters. Non-standard spaces imply specific orientations and sampling grids. Important to note, the ``res-*`` modifier does not define the resolution used for the spatial normalization. To generate no PET outputs, use this option without specifying any spatial references. For further details, please check out https://petprep.readthedocs.io/en/latest/spaces.html",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "command-line-flag": "--output-spaces",
+            "name": "output_spaces"
+        },
+        {
+            "id": "longitudinal",
+            "type": "Flag",
+            "value-key": "[LONGITUDINAL]",
+            "description": "Deprecated - use `--subject-anatomical-reference unbiased` instead",
+            "optional": true,
+            "command-line-flag": "--longitudinal",
+            "name": "longitudinal"
+        },
+        {
+            "id": "pet2anat_dof",
+            "type": "Number",
+            "value-key": "[PET2ANAT_DOF]",
+            "description": "Degrees of freedom when registering PET to anatomical images. 6 degrees (rotation and translation) are used by default. (Default: \"6\")",
+            "optional": true,
+            "command-line-flag": "--pet2anat-dof",
+            "value-choices": [
+                6,
+                9,
+                12
+            ],
+            "name": "pet2anat_dof"
+        },
+        {
+            "id": "pet2anat_method",
+            "type": "String",
+            "value-key": "[PET2ANAT_METHOD]",
+            "description": "Method for PET-to-anatomical registration. \"auto\" runs both FreeSurfer and ANTs and selects the best. \"mri_coreg\" uses FreeSurfer mri_coreg. \"robust\" uses FreeSurfer mri_robust_register (6 DoF only). \"ants\" uses ANTs rigid registration (6 DoF only). \"identity\" trusts the PET and anatomical image headers and performs no registration optimization. (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--pet2anat-method",
+            "value-choices": [
+                "mri_coreg",
+                "robust",
+                "ants",
+                "auto",
+                "identity"
+            ],
+            "name": "pet2anat_method"
+        },
+        {
+            "id": "pet2anat_no_anat_crop",
+            "type": "Flag",
+            "value-key": "[PET2ANAT_NO_ANAT_CROP]",
+            "description": "Disable robust FOV cropping of the anatomical reference before PET-to-T1w registration. This also disables the auto-mode uncropped anatomical fallback.",
+            "optional": true,
+            "command-line-flag": "--pet2anat-no-anat-crop",
+            "name": "pet2anat_no_anat_crop"
+        },
+        {
+            "id": "anatref",
+            "type": "String",
+            "value-key": "[ANATREF]",
+            "description": "Anatomical reference to use for PET-to-T1w registration. The default ('auto') inspects the PET-derived mask and uses the preprocessed T1-weighted image unless the mask is unusually large, in which case it switches to FreeSurfer's bias-corrected nu.mgz. Use 't1w' to always keep the preprocessed T1w image, or 'nu' to always prefer FreeSurfer's bias-corrected volume (an intensity normalized volume generated after correcting for non-uniformity in the orig.mgz). (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--anatref",
+            "value-choices": [
+                "t1w",
+                "nu",
+                "auto"
+            ],
+            "name": "anatref"
+        },
+        {
+            "id": "force_bbr",
+            "type": "String",
+            "value-key": "[FORCE_BBR]",
+            "description": "Deprecated - use `--force bbr` instead.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "max-list-entries": 0,
+            "command-line-flag": "--force-bbr",
+            "name": "force_bbr"
+        },
+        {
+            "id": "force_no_bbr",
+            "type": "String",
+            "value-key": "[FORCE_NO_BBR]",
+            "description": "Deprecated - use `--force no-bbr` instead.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "max-list-entries": 0,
+            "command-line-flag": "--force-no-bbr",
+            "name": "force_no_bbr"
+        },
+        {
+            "id": "random_seed",
+            "type": "Number",
+            "value-key": "[RANDOM_SEED]",
+            "description": "Initialize the random seed for the workflow",
+            "optional": true,
+            "command-line-flag": "--random-seed",
+            "integer": true,
+            "name": "random_seed"
+        },
+        {
+            "id": "output_layout",
+            "type": "String",
+            "value-key": "[OUTPUT_LAYOUT]",
+            "description": "Organization of outputs. \"bids\" (default) places PETPrep derivatives directly in the output directory, and defaults to placing FreeSurfer derivatives in <output-dir>/sourcedata/freesurfer. \"legacy\" creates derivative datasets as subdirectories of outputs. (Default: \"bids\")",
+            "optional": true,
+            "command-line-flag": "--output-layout",
+            "value-choices": [
+                "bids",
+                "legacy"
+            ],
+            "name": "output_layout"
+        },
+        {
+            "id": "aggregate_session_reports",
+            "type": "Number",
+            "value-key": "[AGGREGATE_SESSION_REPORTS]",
+            "description": "Maximum number of sessions aggregated in one subject's visual report. If exceeded, visual reports are split by session. (Default: 4)",
+            "optional": true,
+            "command-line-flag": "--aggregate-session-reports",
+            "integer": true,
+            "name": "aggregate_session_reports"
+        },
+        {
+            "id": "medial_surface_nan",
+            "type": "Flag",
+            "value-key": "[MEDIAL_SURFACE_NAN]",
+            "description": "Replace medial wall values with NaNs on PET GIFTI files. Only performed for GIFTI files mapped to a freesurfer subject (fsaverage or fsnative).",
+            "optional": true,
+            "command-line-flag": "--medial-surface-nan",
+            "name": "medial_surface_nan"
+        },
+        {
+            "id": "project_goodvoxels",
+            "type": "Flag",
+            "value-key": "[PROJECT_GOODVOXELS]",
+            "description": "Exclude voxels whose timeseries have locally high coefficient of variation from surface resampling. Only performed for GIFTI files mapped to a freesurfer subject (fsaverage or fsnative).",
+            "optional": true,
+            "command-line-flag": "--project-goodvoxels",
+            "name": "project_goodvoxels"
+        },
+        {
+            "id": "md_only_boilerplate",
+            "type": "Flag",
+            "value-key": "[MD_ONLY_BOILERPLATE]",
+            "description": "Skip generation of HTML and LaTeX formatted citation with pandoc",
+            "optional": true,
+            "command-line-flag": "--md-only-boilerplate",
+            "name": "md_only_boilerplate"
+        },
+        {
+            "id": "cifti_output",
+            "description": "Output preprocessed PET as a CIFTI dense timeseries. Optionally, the number of grayordinate can be specified (default is 91k, which equates to 2mm resolution) (Default: false)",
+            "type": "String",
+            "value-key": "[CIFTI_OUTPUT]",
+            "optional": true,
+            "value-choices": [
+                "91k",
+                "170k"
+            ],
+            "command-line-flag": "--cifti-output",
+            "name": "cifti_output"
+        },
+        {
+            "id": "no_msm",
+            "type": "Flag",
+            "value-key": "[NO_MSM]",
+            "description": "Disable Multimodal Surface Matching surface registration.",
+            "optional": true,
+            "command-line-flag": "--no-msm",
+            "name": "no_msm"
+        },
+        {
+            "id": "return_all_components",
+            "type": "Flag",
+            "value-key": "[RETURN_ALL_COMPONENTS]",
+            "description": "Include all components estimated in CompCor decomposition in the confounds file instead of only the components sufficient to explain 50 percent of PET variance in each CompCor mask",
+            "optional": true,
+            "command-line-flag": "--return-all-components",
+            "name": "return_all_components"
+        },
+        {
+            "id": "fd_spike_threshold",
+            "type": "Number",
+            "value-key": "[FD_SPIKE_THRESHOLD]",
+            "description": "Threshold for flagging a frame as an outlier on the basis of framewise displacement (Default: 0.5)",
+            "optional": true,
+            "command-line-flag": "--fd-spike-threshold",
+            "name": "fd_spike_threshold"
+        },
+        {
+            "id": "dvars_spike_threshold",
+            "type": "Number",
+            "value-key": "[DVARS_SPIKE_THRESHOLD]",
+            "description": "Threshold for flagging a frame as an outlier on the basis of standardised DVARS (Default: 1.5)",
+            "optional": true,
+            "command-line-flag": "--dvars-spike-threshold",
+            "name": "dvars_spike_threshold"
+        },
+        {
+            "id": "skull_strip_template",
+            "type": "String",
+            "value-key": "[SKULL_STRIP_TEMPLATE]",
+            "description": "Select a template for skull-stripping with antsBrainExtraction (OASIS30ANTs, by default) (Default: \"OASIS30ANTs\")",
+            "optional": true,
+            "command-line-flag": "--skull-strip-template",
+            "name": "skull_strip_template"
+        },
+        {
+            "id": "skull_strip_fixed_seed",
+            "type": "Flag",
+            "value-key": "[SKULL_STRIP_FIXED_SEED]",
+            "description": "Do not use a random seed for skull-stripping - will ensure run-to-run replicability when used with --omp-nthreads 1 and matching --random-seed <int>",
+            "optional": true,
+            "command-line-flag": "--skull-strip-fixed-seed",
+            "name": "skull_strip_fixed_seed"
+        },
+        {
+            "id": "skull_strip_t1w",
+            "type": "String",
+            "value-key": "[SKULL_STRIP_T1W]",
+            "description": "Perform T1-weighted skull stripping ('force' ensures skull stripping, 'skip' ignores skull stripping, and 'auto' applies brain extraction based on the outcome of a heuristic to check whether the brain is already masked). (Default: \"force\")",
+            "optional": true,
+            "command-line-flag": "--skull-strip-t1w",
+            "value-choices": [
+                "auto",
+                "skip",
+                "force"
+            ],
+            "name": "skull_strip_t1w"
+        },
+        {
+            "id": "fs_license_file",
+            "type": "String",
+            "value-key": "[FS_LICENSE_FILE]",
+            "description": "Path to FreeSurfer license key file. Get it (for free) by registering at https://surfer.nmr.mgh.harvard.edu/registration.html",
+            "optional": true,
+            "command-line-flag": "--fs-license-file",
+            "name": "fs_license_file"
+        },
+        {
+            "id": "submm_recon",
+            "type": "Flag",
+            "value-key": "[SUBMM_RECON]",
+            "description": "Enable FreeSurfer sub-millimeter (hires) reconstruction.",
+            "optional": true,
+            "command-line-flag": "--submm-recon",
+            "name": "submm_recon"
+        },
+        {
+            "id": "no_submm_recon",
+            "type": "Flag",
+            "optional": true,
+            "value-key": "[NO_SUBMM_RECON]",
+            "command-line-flag": "--no-submm-recon",
+            "name": "no_submm_recon"
+        },
+        {
+            "id": "fs_subjects_dir",
+            "type": "File",
+            "optional": true,
+            "value-key": "[FS_SUBJECTS_DIR]",
+            "command-line-flag": "--fs-subjects-dir",
+            "name": "fs_subjects_dir"
+        },
+        {
+            "id": "run_reconall",
+            "type": "Flag",
+            "optional": true,
+            "value-key": "[RUN_RECONALL]",
+            "command-line-flag": "--fs-no-reconall",
+            "name": "run_reconall"
+        },
+        {
+            "id": "fs_no_resume",
+            "type": "Flag",
+            "value-key": "[FS_NO_RESUME]",
+            "description": "EXPERT: Import pre-computed FreeSurfer reconstruction without resuming. The user is responsible for ensuring that all necessary files are present.",
+            "optional": true,
+            "command-line-flag": "--fs-no-resume",
+            "name": "fs_no_resume"
+        },
+        {
+            "id": "hmc_fwhm",
+            "type": "Number",
+            "value-key": "[HMC_FWHM]",
+            "description": "FWHM for Gaussian smoothing applied during head-motion estimation. (Default: 10)",
+            "optional": true,
+            "command-line-flag": "--hmc-fwhm",
+            "name": "hmc_fwhm"
+        },
+        {
+            "id": "hmc_start_time",
+            "type": "Number",
+            "value-key": "[HMC_START_TIME]",
+            "description": "Time (in seconds) after which head-motion estimation is performed. (Default: 120)",
+            "optional": true,
+            "command-line-flag": "--hmc-start-time",
+            "name": "hmc_start_time"
+        },
+        {
+            "id": "hmc_init_frame",
+            "description": "Initial frame index for head-motion estimation; omit or use 'auto' to select the frame with highest uptake. (Default: \"auto\")",
+            "type": "String",
+            "value-key": "[HMC_INIT_FRAME]",
+            "optional": true,
+            "command-line-flag": "--hmc-init-frame",
+            "name": "hmc_init_frame"
+        },
+        {
+            "id": "hmc_init_frame_fix",
+            "type": "Flag",
+            "value-key": "[HMC_INIT_FRAME_FIX]",
+            "description": "Keep the chosen initial reference frame fixed during head-motion estimation.",
+            "optional": true,
+            "command-line-flag": "--hmc-init-frame-fix",
+            "name": "hmc_init_frame_fix"
+        },
+        {
+            "id": "hmc_memory_policy",
+            "type": "String",
+            "value-key": "[HMC_MEMORY_POLICY]",
+            "description": "Policy for automatic HMC memory safeguards. 'auto' estimates robust-template memory from the PET data and enables fixed-frame/subsample safeguards for high-risk scans; 'off' disables these automatic safeguards. (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--hmc-memory-policy",
+            "value-choices": [
+                "auto",
+                "off"
+            ],
+            "name": "hmc_memory_policy"
+        },
+        {
+            "id": "hmc_off",
+            "type": "Flag",
+            "value-key": "[HMC_OFF]",
+            "description": "Disable head-motion correction and use the uncorrected data.",
+            "optional": true,
+            "command-line-flag": "--hmc-off",
+            "name": "hmc_off"
+        },
+        {
+            "id": "petref",
+            "type": "String",
+            "value-key": "[PETREF]",
+            "description": "Strategy for generating the PET reference. 'auto' (default) evaluates multiple strategies to select the best reference. 'template' uses the motion correction template, while 'twa' computes a time-weighted average, 'sum' produces a summed image of the motion-corrected series, and 'first5min' averages the early (0-5 minute) portion of the acquisition. (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--petref",
+            "value-choices": [
+                "template",
+                "twa",
+                "sum",
+                "first5min",
+                "auto"
+            ],
+            "name": "petref"
+        },
+        {
+            "id": "seg",
+            "type": "String",
+            "value-key": "[SEG]",
+            "description": "Segmentation method to use. (Default: \"gtm\")",
+            "optional": true,
+            "command-line-flag": "--seg",
+            "value-choices": [
+                "gtm",
+                "brainstem",
+                "thalamicNuclei",
+                "hippocampusAmygdala",
+                "wm",
+                "aparcaseg",
+                "raphe",
+                "limbic",
+                "HOCPA",
+                "MASSP20",
+                "Schaefer20181000Parcels17Networks",
+                "Schaefer20181000Parcels7Networks",
+                "Schaefer2018100Parcels17Networks",
+                "Schaefer2018100Parcels7Networks",
+                "Schaefer2018200Parcels17Networks",
+                "Schaefer2018200Parcels7Networks",
+                "Schaefer2018300Parcels17Networks",
+                "Schaefer2018300Parcels7Networks",
+                "Schaefer2018400Parcels17Networks",
+                "Schaefer2018400Parcels7Networks",
+                "Schaefer2018500Parcels17Networks",
+                "Schaefer2018500Parcels7Networks",
+                "Schaefer2018600Parcels17Networks",
+                "Schaefer2018600Parcels7Networks",
+                "Schaefer2018800Parcels17Networks",
+                "Schaefer2018800Parcels7Networks"
+            ],
+            "name": "seg"
+        },
+        {
+            "id": "ref_mask_name",
+            "type": "String",
+            "value-key": "[REF_MASK_NAME]",
+            "description": "Predefined reference regions. Pair with --ref-mask-index to define custom labels.",
+            "optional": true,
+            "command-line-flag": "--ref-mask-name",
+            "name": "ref_mask_name"
+        },
+        {
+            "id": "ref_mask_index",
+            "type": "Number",
+            "value-key": "[REF_MASK_INDEX]",
+            "description": "List of segmentation indices to use for the reference mask.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--ref-mask-index",
+            "integer": true,
+            "name": "ref_mask_index"
+        },
+        {
+            "id": "pvc_tool",
+            "type": "String",
+            "value-key": "[PVC_TOOL]",
+            "description": "Tool to use for partial volume correction",
+            "optional": true,
+            "command-line-flag": "--pvc-tool",
+            "value-choices": [
+                "petpvc",
+                "petsurfer"
+            ],
+            "name": "pvc_tool"
+        },
+        {
+            "id": "pvc_method",
+            "type": "String",
+            "value-key": "[PVC_METHOD]",
+            "description": "PVC method identifier. PETPVC: GTM, IY, IY+RL, IY+VC, LABBE, LABBE+MTC, LABBE+MTC+RL, LABBE+MTC+VC, LABBE+RBV, LABBE+RBV+RL, LABBE+RBV+VC, MG, MG+RL, MG+VC, MTC, MTC+RL, MTC+VC, RBV, RBV+RL, RBV+VC, RL, STC, VC. PETSurfer: AGTM, GTM, MG, RBV.",
+            "optional": true,
+            "command-line-flag": "--pvc-method",
+            "value-choices": [
+                "AGTM",
+                "GTM",
+                "IY",
+                "IY+RL",
+                "IY+VC",
+                "LABBE",
+                "LABBE+MTC",
+                "LABBE+MTC+RL",
+                "LABBE+MTC+VC",
+                "LABBE+RBV",
+                "LABBE+RBV+RL",
+                "LABBE+RBV+VC",
+                "MG",
+                "MG+RL",
+                "MG+VC",
+                "MTC",
+                "MTC+RL",
+                "MTC+VC",
+                "RBV",
+                "RBV+RL",
+                "RBV+VC",
+                "RL",
+                "STC",
+                "VC"
+            ],
+            "name": "pvc_method"
+        },
+        {
+            "id": "pvc_psf",
+            "type": "Number",
+            "value-key": "[PVC_PSF]",
+            "description": "Point spread function FWHM (one value or three values)",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--pvc-psf",
+            "name": "pvc_psf"
+        },
+        {
+            "id": "track_carbon",
+            "type": "Flag",
+            "value-key": "[TRACK_CARBON]",
+            "description": "Tracks power draws using CodeCarbon package",
+            "optional": true,
+            "command-line-flag": "--track-carbon",
+            "name": "track_carbon"
+        },
+        {
+            "id": "country_code",
+            "type": "String",
+            "value-key": "[COUNTRY_CODE]",
+            "description": "Country ISO code used by carbon trackers (Default: \"CAN\")",
+            "optional": true,
+            "command-line-flag": "--country-code",
+            "name": "country_code"
+        },
+        {
+            "id": "verbose",
+            "type": "String",
+            "value-key": "[VERBOSE]",
+            "description": "Increases log verbosity for each occurrence. Debug level is '-vvv'.",
+            "optional": true,
+            "value-choices": [
+                "-v",
+                "-vv",
+                "-vvv"
+            ],
+            "name": "verbose"
+        },
+        {
+            "id": "work_dir",
+            "type": "File",
+            "value-key": "[WORK_DIR]",
+            "description": "Path where intermediate results should be stored",
+            "optional": true,
+            "command-line-flag": "--work-dir",
+            "name": "work_dir"
+        },
+        {
+            "id": "clean_workdir",
+            "type": "Flag",
+            "value-key": "[CLEAN_WORKDIR]",
+            "description": "Clears working directory of contents. Use of this flag is not recommended when running concurrent processes of PETPrep.",
+            "optional": true,
+            "command-line-flag": "--clean-workdir",
+            "name": "clean_workdir"
+        },
+        {
+            "id": "resource_monitor",
+            "type": "Flag",
+            "value-key": "[RESOURCE_MONITOR]",
+            "description": "Enable Nipype's resource monitoring to keep track of memory and CPU usage",
+            "optional": true,
+            "command-line-flag": "--resource-monitor",
+            "name": "resource_monitor"
+        },
+        {
+            "id": "config_file",
+            "type": "String",
+            "value-key": "[CONFIG_FILE]",
+            "description": "Use pre-generated configuration file. Values in file will be overridden by command-line arguments.",
+            "optional": true,
+            "command-line-flag": "--config-file",
+            "name": "config_file"
+        },
+        {
+            "id": "write_graph",
+            "type": "Flag",
+            "value-key": "[WRITE_GRAPH]",
+            "description": "Write workflow graph.",
+            "optional": true,
+            "command-line-flag": "--write-graph",
+            "name": "write_graph"
+        },
+        {
+            "id": "stop_on_first_crash",
+            "type": "Flag",
+            "value-key": "[STOP_ON_FIRST_CRASH]",
+            "description": "Force stopping on first crash, even if a work directory was specified.",
+            "optional": true,
+            "command-line-flag": "--stop-on-first-crash",
+            "name": "stop_on_first_crash"
+        },
+        {
+            "id": "notrack",
+            "type": "Flag",
+            "value-key": "[NOTRACK]",
+            "description": "Opt-out of sending tracking information of this run to the PETPrep developers. This information helps to improve PETPrep and provides an indicator of real world usage crucial for obtaining funding.",
+            "optional": true,
+            "command-line-flag": "--notrack",
+            "name": "notrack"
+        },
+        {
+            "id": "debug",
+            "type": "String",
+            "value-key": "[DEBUG]",
+            "description": "Debug mode(s) to enable. 'all' is alias for all available modes.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--debug",
+            "value-choices": [
+                "pdb",
+                "debug",
+                "all"
+            ],
+            "name": "debug"
+        }
+    ]
+}

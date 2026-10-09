@@ -1,0 +1,18 @@
+{
+    "fmri_dir": "[[NIPOPPY_DPATH_DERIVATIVES]]/fmriprep/[[FMRIPREP_VERSION]]/output",
+    "output_dir": "[[NIPOPPY_DPATH_PIPELINE_OUTPUT]]/fmriprep-[[FMRIPREP_VERSION]]",
+    "analysis_level": "participant",
+    "mode": "linc",
+    "participant_label": [
+        "[[NIPOPPY_PARTICIPANT_ID]]"
+    ],
+    "session_id": [
+        "[[NIPOPPY_SESSION_ID]]"
+    ],
+    "nprocs": 8,
+    "omp_nthreads": 4,
+    "mem_mb": "4000",
+    "fs_license_file": "[[FREESURFER_LICENSE_FILE]]",
+    "work_dir": "[[NIPOPPY_DPATH_PIPELINE_WORK]]",
+    "notrack": true
+}
