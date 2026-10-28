@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """Extractor for FreeSurfer aseg/aparc stats and quality control metrics."""
 
+from __future__ import annotations
+
 import argparse
 import os
 import re
@@ -55,6 +57,13 @@ def _print_error_and_exit(message: str):
     sys.exit(f"\nERROR: {message}\nStopping fs_stats\n")
 
 
+def _removeprefix(string: str, prefix: str) -> str:
+    """Backport of str.removeprefix for Python<3.9."""
+    if prefix and string.startswith(prefix):
+        return string[len(prefix) :]
+    return string
+
+
 def _get_fs_version(dpath, fname_version=FNAME_FS_VERSION, re_version=RE_FS_VERSION):
     """
     Search for a version file and extract FreeSurfer version from it.
@@ -95,7 +104,7 @@ def _load_fs_stats_table(
         The TSV file as a DataFrame with a subject index.
     """
     df = pd.read_csv(tsv_path, sep="\t", index_col=0)
-    df.index = df.index.str.removeprefix(sub_prefix)
+    df.index = df.index.str.replace(f"^{re.escape(sub_prefix)}", "", regex=True)
     df.index.name = sub_colname
     return df
 
@@ -616,7 +625,7 @@ def run_single_qc(
     )
     with tempfile.TemporaryDirectory(dir=subjects_dir_path) as tmpdir:
         for subject in subjects:
-            data_subject = {sub_colname: subject.removeprefix(sub_prefix)}
+            data_subject = {sub_colname: _removeprefix(subject, sub_prefix)}
 
             # get number of holes in surface files based on Euler number
             for surf_path in euler_surf_paths:
@@ -838,7 +847,7 @@ def run_multi(
             continue
 
         n_sessions += 1
-        session_id = dpath_session.name.removeprefix(ses_prefix)
+        session_id = _removeprefix(dpath_session.name, ses_prefix)
         print(f"===== {session_id} =====")
 
         dfs_aseg, dfs_aparc, df_qc = run_single(
