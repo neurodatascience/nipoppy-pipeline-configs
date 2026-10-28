@@ -1,0 +1,24 @@
+{
+    "script_path": "[[NIPOPPY_DPATH_PIPELINES]]/extraction/fs_stats-0.2.2/fs_stats.py",
+    "input_dir_path": "[[NIPOPPY_DPATH_PIPELINE_OUTPUT]]",
+    "output_dir_path": "[[NIPOPPY_DPATH_PIPELINE_IDP]]/fs_stats-0.2.2",
+    "mode": "multi",
+    "with_qc": false,
+    "aseg_measures": [
+        "volume"
+    ],
+    "aparc_parcellations": [
+        "aparc",
+        "aparc.a2009s",
+        "aparc.DKTatlas"
+    ],
+    "aparc_measures": [
+        "thickness",
+        "area",
+        "meancurv"
+    ],
+    "container": "[[NIPOPPY_CONTAINER_COMMAND]] --env SUBJECTS_DIR=[subjects_dir] freesurfer/freesurfer:7.3.2",
+    "aseg_args": " --skip",
+    "aparc_args": " --skip",
+    "verbose": true
+}
