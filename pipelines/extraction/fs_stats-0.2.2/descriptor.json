@@ -3,7 +3,7 @@
     "description": "FreeSurfer aseg/aparc stats (and QC metrics) extractor",
     "tool-version": "0.2.2",
     "schema-version": "0.5",
-    "command-line": "fspython [SCRIPT_PATH] [INPUT_DIR_PATH] [OUTPUT_DIR_PATH] [MODE] [WITH_QC] [ASEG_MEASURES] [APARC_PARCELLATIONS] [APARC_MEASURES] [CONTAINER] [ASEG_ARGS] [APARC_ARGS] [EULER_SURF_PATHS] [CNR_VOL_PATHS] [CNR_MEASURES] [SUB_COLNAME] [SES_COLNAME] [SUB_PREFIX] [SES_PREFIX] [VERBOSE]",
+    "command-line": "fspython [SCRIPT_PATH] [INPUT_DIR_PATH] [OUTPUT_DIR_PATH] [MODE] [WITH_QC] [ASEG_MEASURES] [APARC_PARCELLATIONS] [APARC_MEASURES] [ASEG_ARGS] [APARC_ARGS] [EULER_SURF_PATHS] [CNR_VOL_PATHS] [CNR_MEASURES] [SUB_COLNAME] [SES_COLNAME] [SUB_PREFIX] [SES_PREFIX] [VERBOSE]",
     "inputs": [
         {
             "name": "script_path",
@@ -80,15 +80,6 @@
             "optional": true,
             "command-line-flag": "--aparc-measures",
             "value-key": "[APARC_MEASURES]"
-        },
-        {
-            "name": "container",
-            "id": "container",
-            "description": "Container command and arguments (including image file), as a single string. This needs to contain everything needed to be able to run the FreeSurfer commands, for example \"apptainer exec --bind <INPUT_DIR_PATH> <IMAGE_FILE_PATH>\". Does not need to be specified if running on a system with FreeSurfer installed. IMPORTANT: only the Singularity/Apptainer container engine is explicitly supported because it allows for forwarding environment variables; this script might work with Docker containers but likely only with --mode single.",
-            "type": "String",
-            "optional": true,
-            "command-line-flag": "--container",
-            "value-key": "[CONTAINER]"
         },
         {
             "name": "aseg_args",
