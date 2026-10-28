@@ -1,0 +1,450 @@
+{
+    "schema-version": "0.5",
+    "name": "mriqc",
+    "description": "Automated Quality Control and visual reports for Quality Assessment of structural (T1w, T2w) and functional MRI of the brain.\n\nIMPORTANT: Anonymized quality metrics (IQMs) will be submitted to MRIQC's metrics repository. Submission of IQMs can be disabled using the ``--no-sub`` argument. Please visit https://mriqc.readthedocs.io/en/latest/dsa.html to revise MRIQC's Data Sharing Agreement.",
+    "tool-version": "24.0.2",
+    "container-image": {
+        "image": "nipreps/mriqc:24.0.2",
+        "type": "docker"
+    },
+    "command-line": "mriqc [BIDS_DIR] [OUTPUT_DIR] [ANALYSIS_LEVEL] [VERBOSE] [SPECIES] [PARTICIPANT_LABEL] [BIDS_FILTER_FILE] [SESSION_ID] [RUN_ID] [TASK_ID] [MODALITIES] [DSNAME] [BIDS_DATABASE_DIR] [BIDS_DATABASE_WIPE] [NO_DATALAD_GET] [NPROCS] [OMP_NTHREADS] [MEM] [TESTING] [FLOAT32] [PDB] [WORK_DIR] [VERBOSE_REPORTS] [REPORTS_ONLY] [WRITE_GRAPH] [DRY_RUN] [RESOURCE_MONITOR] [USE_PLUGIN] [CRASHFILE_FORMAT] [NO_SUB] [EMAIL] [WEBAPI_URL] [WEBAPI_PORT] [UPLOAD_STRICT] [NOTRACK] [ANTS_FLOAT] [ANTS_SETTINGS] [MIN_DWI_LENGTH] [MIN_BOLD_LENGTH] [FFT_SPIKES_DETECTOR] [FD_THRES] [DEOBLIQUE] [DESPIKE] [START_IDX] [STOP_IDX]",
+    "inputs": [
+        {
+            "id": "bids_dir",
+            "type": "String",
+            "value-key": "[BIDS_DIR]",
+            "description": "The root folder of a BIDS valid dataset (sub-XXXXX folders should be found at the top level in this folder).",
+            "name": "bids_dir"
+        },
+        {
+            "id": "output_dir",
+            "type": "File",
+            "value-key": "[OUTPUT_DIR]",
+            "description": "The directory where the output files should be stored. If you are running group level analysis this folder should be prepopulated with the results of the participant level analysis.",
+            "name": "output_dir"
+        },
+        {
+            "id": "analysis_level",
+            "type": "String",
+            "value-key": "[ANALYSIS_LEVEL]",
+            "description": "Level of the analysis that will be performed. Multiple participant level analyses can be run independently (in parallel) using the same output_dir.",
+            "list": true,
+            "min-list-entries": 1,
+            "value-choices": [
+                "participant",
+                "group"
+            ],
+            "name": "analysis_level"
+        },
+        {
+            "id": "verbose",
+            "type": "String",
+            "value-key": "[VERBOSE]",
+            "description": "Increases log verbosity for each occurrence. Debug level is '-vvv'.",
+            "optional": true,
+            "value-choices": [
+                "-v",
+                "-vv",
+                "-vvv"
+            ],
+            "name": "verbose"
+        },
+        {
+            "id": "species",
+            "type": "String",
+            "value-key": "[SPECIES]",
+            "description": "Use appropriate template for population (Default: \"human\")",
+            "optional": true,
+            "command-line-flag": "--species",
+            "value-choices": [
+                "human",
+                "rat"
+            ],
+            "name": "species"
+        },
+        {
+            "id": "participant_label",
+            "type": "String",
+            "value-key": "[PARTICIPANT_LABEL]",
+            "description": "A space delimited list of participant identifiers or a single identifier (the sub- prefix can be removed).",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--participant-label",
+            "name": "participant_label"
+        },
+        {
+            "id": "bids_filter_file",
+            "type": "File",
+            "value-key": "[BIDS_FILTER_FILE]",
+            "description": "a JSON file describing custom BIDS input filter using pybids {<suffix>:{<entity>:<filter>,...},...} (https://github.com/bids-standard/pybids/blob/master/bids/layout/config/bids.json)",
+            "optional": true,
+            "command-line-flag": "--bids-filter-file",
+            "name": "bids_filter_file"
+        },
+        {
+            "id": "session_id",
+            "type": "String",
+            "value-key": "[SESSION_ID]",
+            "description": "Filter input dataset by session ID.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "command-line-flag": "--session-id",
+            "name": "session_id"
+        },
+        {
+            "id": "run_id",
+            "type": "Number",
+            "value-key": "[RUN_ID]",
+            "description": "DEPRECATED - This argument will be disabled. Use ``--bids-filter-file`` instead.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "command-line-flag": "--run-id",
+            "integer": true,
+            "name": "run_id"
+        },
+        {
+            "id": "task_id",
+            "type": "String",
+            "value-key": "[TASK_ID]",
+            "description": "Filter input dataset by task ID.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "command-line-flag": "--task-id",
+            "name": "task_id"
+        },
+        {
+            "id": "modalities",
+            "type": "String",
+            "value-key": "[MODALITIES]",
+            "description": "Filter input dataset by MRI type.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "command-line-flag": "--modalities",
+            "value-choices": [
+                "T1w",
+                "T2w",
+                "bold",
+                "dwi"
+            ],
+            "name": "modalities"
+        },
+        {
+            "id": "dsname",
+            "type": "String",
+            "value-key": "[DSNAME]",
+            "description": "A dataset name.",
+            "optional": true,
+            "command-line-flag": "--dsname",
+            "name": "dsname"
+        },
+        {
+            "id": "bids_database_dir",
+            "type": "String",
+            "value-key": "[BIDS_DATABASE_DIR]",
+            "description": "Path to an existing PyBIDS database folder, for faster indexing (especially useful for large datasets).",
+            "optional": true,
+            "command-line-flag": "--bids-database-dir",
+            "name": "bids_database_dir"
+        },
+        {
+            "id": "bids_database_wipe",
+            "type": "Flag",
+            "value-key": "[BIDS_DATABASE_WIPE]",
+            "description": "Wipe out previously existing BIDS indexing caches, forcing re-indexing.",
+            "optional": true,
+            "command-line-flag": "--bids-database-wipe",
+            "name": "bids_database_wipe"
+        },
+        {
+            "id": "no_datalad_get",
+            "type": "Flag",
+            "value-key": "[NO_DATALAD_GET]",
+            "description": "Disable attempting to get remote files in DataLad datasets.",
+            "optional": true,
+            "command-line-flag": "--no-datalad-get",
+            "name": "no_datalad_get"
+        },
+        {
+            "id": "nprocs",
+            "type": "String",
+            "value-key": "[NPROCS]",
+            "description": "Maximum number of simultaneously running parallel processes executed by *MRIQC* (e.g., several instances of ANTs' registration). However, when ``--nprocs`` is greater or equal to the ``--omp-nthreads`` option, it also sets the maximum number of threads that simultaneously running processes may aggregate (meaning, with ``--nprocs 16 --omp-nthreads 8`` a maximum of two 8-CPU-threaded processes will be running at a given time). Under this mode of operation, ``--nprocs`` sets the maximum number of processors that can be assigned work within an *MRIQC* job, which includes all the processors used by currently running single- and multi-threaded processes. If ``None``, the number of CPUs available will be automatically assigned (which may not be what you want in, e.g., shared systems like a HPC cluster.",
+            "optional": true,
+            "command-line-flag": "--nprocs",
+            "name": "nprocs"
+        },
+        {
+            "id": "omp_nthreads",
+            "type": "String",
+            "value-key": "[OMP_NTHREADS]",
+            "description": "Maximum number of threads that multi-threaded processes executed by *MRIQC* (e.g., ANTs' registration) can use. If ``None``, the number of CPUs available will be automatically assigned (which may not be what you want in, e.g., shared systems like a HPC cluster.",
+            "optional": true,
+            "command-line-flag": "--omp-nthreads",
+            "name": "omp_nthreads"
+        },
+        {
+            "id": "mem",
+            "type": "String",
+            "value-key": "[MEM]",
+            "description": "Upper bound memory limit for MRIQC processes.",
+            "optional": true,
+            "command-line-flag": "--mem",
+            "name": "mem"
+        },
+        {
+            "id": "testing",
+            "type": "Flag",
+            "value-key": "[TESTING]",
+            "description": "Use testing settings for a minimal footprint.",
+            "optional": true,
+            "command-line-flag": "--testing",
+            "name": "testing"
+        },
+        {
+            "id": "float32",
+            "type": "Flag",
+            "value-key": "[FLOAT32]",
+            "description": "Cast the input data to float32 if it's represented in higher precision (saves space and improves performance).",
+            "optional": true,
+            "command-line-flag": "--float32",
+            "name": "float32"
+        },
+        {
+            "id": "pdb",
+            "type": "Flag",
+            "value-key": "[PDB]",
+            "description": "Open Python debugger (pdb) on exceptions.",
+            "optional": true,
+            "command-line-flag": "--pdb",
+            "name": "pdb"
+        },
+        {
+            "id": "work_dir",
+            "type": "File",
+            "value-key": "[WORK_DIR]",
+            "description": "Path where intermediate results should be stored.",
+            "optional": true,
+            "command-line-flag": "--work-dir",
+            "name": "work_dir"
+        },
+        {
+            "id": "verbose_reports",
+            "type": "Flag",
+            "value-key": "[VERBOSE_REPORTS]",
+            "optional": true,
+            "command-line-flag": "--verbose-reports",
+            "name": "verbose_reports"
+        },
+        {
+            "id": "reports_only",
+            "type": "Flag",
+            "value-key": "[REPORTS_ONLY]",
+            "optional": true,
+            "command-line-flag": "--reports-only",
+            "name": "reports_only"
+        },
+        {
+            "id": "write_graph",
+            "type": "Flag",
+            "value-key": "[WRITE_GRAPH]",
+            "description": "Write workflow graph.",
+            "optional": true,
+            "command-line-flag": "--write-graph",
+            "name": "write_graph"
+        },
+        {
+            "id": "dry_run",
+            "type": "Flag",
+            "value-key": "[DRY_RUN]",
+            "description": "Do not run the workflow.",
+            "optional": true,
+            "command-line-flag": "--dry-run",
+            "name": "dry_run"
+        },
+        {
+            "id": "resource_monitor",
+            "type": "Flag",
+            "value-key": "[RESOURCE_MONITOR]",
+            "description": "Hook up the resource profiler callback to nipype.",
+            "optional": true,
+            "command-line-flag": "--resource-monitor",
+            "name": "resource_monitor"
+        },
+        {
+            "id": "use_plugin",
+            "type": "File",
+            "value-key": "[USE_PLUGIN]",
+            "description": "Nipype plugin configuration file.",
+            "optional": true,
+            "command-line-flag": "--use-plugin",
+            "name": "use_plugin"
+        },
+        {
+            "id": "crashfile_format",
+            "type": "String",
+            "value-key": "[CRASHFILE_FORMAT]",
+            "description": "Nipype crashfile format (Default: \"txt\")",
+            "optional": true,
+            "command-line-flag": "--crashfile-format",
+            "value-choices": [
+                "txt",
+                "pklz"
+            ],
+            "name": "crashfile_format"
+        },
+        {
+            "id": "no_sub",
+            "type": "Flag",
+            "value-key": "[NO_SUB]",
+            "description": "Turn off submission of anonymized quality metrics to MRIQC's metrics repository.",
+            "optional": true,
+            "command-line-flag": "--no-sub",
+            "name": "no_sub"
+        },
+        {
+            "id": "email",
+            "type": "String",
+            "value-key": "[EMAIL]",
+            "description": "Email address to include with quality metric submission. (Default: \"\")",
+            "optional": true,
+            "command-line-flag": "--email",
+            "name": "email"
+        },
+        {
+            "id": "webapi_url",
+            "type": "String",
+            "value-key": "[WEBAPI_URL]",
+            "description": "IP address where the MRIQC WebAPI is listening.",
+            "optional": true,
+            "command-line-flag": "--webapi-url",
+            "name": "webapi_url"
+        },
+        {
+            "id": "webapi_port",
+            "type": "Number",
+            "value-key": "[WEBAPI_PORT]",
+            "description": "Port where the MRIQC WebAPI is listening.",
+            "optional": true,
+            "command-line-flag": "--webapi-port",
+            "integer": true,
+            "name": "webapi_port"
+        },
+        {
+            "id": "upload_strict",
+            "type": "Flag",
+            "value-key": "[UPLOAD_STRICT]",
+            "description": "Upload will fail if upload is strict.",
+            "optional": true,
+            "command-line-flag": "--upload-strict",
+            "name": "upload_strict"
+        },
+        {
+            "id": "notrack",
+            "type": "Flag",
+            "value-key": "[NOTRACK]",
+            "description": "Opt-out of sending tracking information of this run to the NiPreps developers. This information helps to improve MRIQC and provides an indicator of real world usage  crucial for obtaining funding.",
+            "optional": true,
+            "command-line-flag": "--notrack",
+            "name": "notrack"
+        },
+        {
+            "id": "ants_float",
+            "type": "Flag",
+            "value-key": "[ANTS_FLOAT]",
+            "description": "Use float number precision on ANTs computations.",
+            "optional": true,
+            "command-line-flag": "--ants-float",
+            "name": "ants_float"
+        },
+        {
+            "id": "ants_settings",
+            "type": "String",
+            "value-key": "[ANTS_SETTINGS]",
+            "description": "Path to JSON file with settings for ANTs.",
+            "optional": true,
+            "command-line-flag": "--ants-settings",
+            "name": "ants_settings"
+        },
+        {
+            "id": "min_dwi_length",
+            "type": "Number",
+            "value-key": "[MIN_DWI_LENGTH]",
+            "description": "Drop DWI runs with fewer orientations than this threshold. (Default: 7)",
+            "optional": true,
+            "command-line-flag": "--min-dwi-length",
+            "integer": true,
+            "name": "min_dwi_length"
+        },
+        {
+            "id": "min_bold_length",
+            "type": "Number",
+            "value-key": "[MIN_BOLD_LENGTH]",
+            "description": "Drop BOLD runs with fewer time points than this threshold. (Default: 5)",
+            "optional": true,
+            "command-line-flag": "--min-bold-length",
+            "integer": true,
+            "name": "min_bold_length"
+        },
+        {
+            "id": "fft_spikes_detector",
+            "type": "Flag",
+            "value-key": "[FFT_SPIKES_DETECTOR]",
+            "description": "Turn on FFT based spike detector (slow).",
+            "optional": true,
+            "command-line-flag": "--fft-spikes-detector",
+            "name": "fft_spikes_detector"
+        },
+        {
+            "id": "fd_thres",
+            "type": "Number",
+            "value-key": "[FD_THRES]",
+            "description": "Threshold on framewise displacement estimates to detect outliers. (Default: 0.2)",
+            "optional": true,
+            "command-line-flag": "--fd_thres",
+            "name": "fd_thres"
+        },
+        {
+            "id": "deoblique",
+            "type": "Flag",
+            "value-key": "[DEOBLIQUE]",
+            "description": "Deoblique the functional scans during head motion correction preprocessing.",
+            "optional": true,
+            "command-line-flag": "--deoblique",
+            "name": "deoblique"
+        },
+        {
+            "id": "despike",
+            "type": "Flag",
+            "value-key": "[DESPIKE]",
+            "description": "Despike the functional scans during head motion correction preprocessing.",
+            "optional": true,
+            "command-line-flag": "--despike",
+            "name": "despike"
+        },
+        {
+            "id": "start_idx",
+            "type": "Number",
+            "value-key": "[START_IDX]",
+            "description": "DEPRECATED Initial volume in functional timeseries that should be considered for preprocessing.",
+            "optional": true,
+            "command-line-flag": "--start-idx",
+            "integer": true,
+            "name": "start_idx"
+        },
+        {
+            "id": "stop_idx",
+            "type": "Number",
+            "value-key": "[STOP_IDX]",
+            "description": "DEPRECATED Final volume in functional timeseries that should be considered for preprocessing.",
+            "optional": true,
+            "command-line-flag": "--stop-idx",
+            "integer": true,
+            "name": "stop_idx"
+        }
+    ]
+}

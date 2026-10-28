@@ -1,0 +1,665 @@
+{
+    "schema-version": "0.5",
+    "name": "xcp_d",
+    "description": "XCP-D: Postprocessing Workflow of fMRI Data v26.1.1",
+    "tool-version": "26.1.1",
+    "container-image": {
+        "image": "pennlinc/xcp_d:26.1.1",
+        "type": "docker"
+    },
+    "command-line": "xcp_d [FMRI_DIR] [OUTPUT_DIR] [ANALYSIS_LEVEL] [MODE] [PARTICIPANT_LABEL] [SESSION_ID] [TASK_ID] [BIDS_FILTER_FILE] [DATASETS] [BIDS_DATABASE_DIR] [NPROCS] [OMP_NTHREADS] [MEM_MB] [LOW_MEM] [USE_PLUGIN] [VERBOSE] [INPUT_TYPE] [FILE_FORMAT] [DUMMY_SCANS] [DESPIKE] [NUISANCE_REGRESSORS] [SMOOTHING] [COMBINE_RUNS] [SKIP] [MOTION_FILTER_TYPE] [BAND_STOP_MIN] [BAND_STOP_MAX] [MOTION_FILTER_ORDER] [HEAD_RADIUS] [FD_THRESH] [MIN_TIME] [OUTPUT_TYPE] [DISABLE_BANDPASS_FILTER] [LOWER_BPF] [UPPER_BPF] [BPF_ORDER] [ATLASES] [SKIP_PARCELLATION_FLAG] [MIN_COVERAGE] [OUTPUT_RUN_WISE_CORRELATIONS] [CREATE_MATRICES] [RANDOM_SEED] [LINC_QC] [ABCC_QC] [REPORT_OUTPUT_LEVEL] [AGGREGATE_SESSION_REPORTS] [OUTPUT_LAYOUT] [WORK_DIR] [CLEAN_WORKDIR] [RESOURCE_MONITOR] [CONFIG_FILE] [WRITE_GRAPH] [STOP_ON_FIRST_CRASH] [NOTRACK] [DEBUG] [FS_LICENSE_FILE] [MD_ONLY_BOILERPLATE] [BOILERPLATE_ONLY] [REPORTS_ONLY] [WARP_SURFACES_NATIVE2STD]",
+    "inputs": [
+        {
+            "id": "fmri_dir",
+            "type": "String",
+            "value-key": "[FMRI_DIR]",
+            "description": "The root folder of fMRI preprocessing derivatives. For example, '/path/to/dset/derivatives/fmriprep'.",
+            "name": "fmri_dir"
+        },
+        {
+            "id": "output_dir",
+            "type": "File",
+            "value-key": "[OUTPUT_DIR]",
+            "description": "The output path for XCP-D derivatives. If the output layout is \"multiverse\", \"xcp_d\" will be appended to output_dir, with a hash built from the configuration. For example, setting output_dir to \"/path/to/dset/derivatives\" and output_layout to \"multiverse\" will result in the output directory being \"/path/to/dset/derivatives/xcp_d-<hash>\".If the output layout is \"bids\", \"xcp_d\" will not be appended to output_dir. For example, setting output_dir to \"/path/to/dset/derivatives/xcp_d\" and output_layout to \"bids\" will result in the output directory being \"/path/to/dset/derivatives/xcp_d\".",
+            "name": "output_dir"
+        },
+        {
+            "id": "analysis_level",
+            "type": "String",
+            "value-key": "[ANALYSIS_LEVEL]",
+            "description": "The analysis level for XCP-D. Must be specified as 'participant'.",
+            "value-choices": [
+                "participant"
+            ],
+            "name": "analysis_level"
+        },
+        {
+            "id": "mode",
+            "type": "String",
+            "value-key": "[MODE]",
+            "description": "The mode of operation for XCP-D. The mode sets several parameters, with values specific to different pipelines. For more information, see the documentation at https://xcp-d.readthedocs.io/en/latest/workflows.html#modes. the parameters manually.",
+            "command-line-flag": "--mode",
+            "value-choices": [
+                "abcd",
+                "hbcd",
+                "linc",
+                "nichart",
+                "none"
+            ],
+            "name": "mode"
+        },
+        {
+            "id": "participant_label",
+            "type": "String",
+            "value-key": "[PARTICIPANT_LABEL]",
+            "description": "A space-delimited list of participant identifiers, or a single identifier. The \"sub-\" prefix can be removed.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--participant-label",
+            "name": "participant_label"
+        },
+        {
+            "id": "session_id",
+            "type": "String",
+            "value-key": "[SESSION_ID]",
+            "description": "A space-delimited list of session identifiers, or a single identifier. The \"ses-\" prefix can be removed. By default, all sessions will be postprocessed.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--session-id",
+            "name": "session_id"
+        },
+        {
+            "id": "task_id",
+            "type": "String",
+            "value-key": "[TASK_ID]",
+            "description": "A space-delimited list of task identifiers, or a single identifier. The \"task-\" prefix can be removed. By default, all tasks will be postprocessed.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--task-id",
+            "name": "task_id"
+        },
+        {
+            "id": "bids_filter_file",
+            "type": "String",
+            "value-key": "[BIDS_FILTER_FILE]",
+            "description": "A JSON file describing custom BIDS input filters using PyBIDS. For further details, please check out https://xcp-d.readthedocs.io/en/latest/usage.html#filtering-inputs-with-bids-filter-files",
+            "optional": true,
+            "command-line-flag": "--bids-filter-file",
+            "name": "bids_filter_file"
+        },
+        {
+            "id": "datasets",
+            "type": "String",
+            "value-key": "[DATASETS]",
+            "description": "Search PATH(s) for derivatives or atlas datasets. These may be provided as named folders (e.g., `--datasets smriprep=/path/to/smriprep`).",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--datasets",
+            "name": "datasets"
+        },
+        {
+            "id": "bids_database_dir",
+            "type": "File",
+            "value-key": "[BIDS_DATABASE_DIR]",
+            "description": "Path to a PyBIDS database folder, for faster indexing (especially useful for large datasets). Will be created if not present.",
+            "optional": true,
+            "command-line-flag": "--bids-database-dir",
+            "name": "bids_database_dir"
+        },
+        {
+            "id": "nprocs",
+            "type": "Number",
+            "value-key": "[NPROCS]",
+            "description": "Maximum number of threads across all processes. (Default: 2)",
+            "optional": true,
+            "command-line-flag": "--nprocs",
+            "integer": true,
+            "name": "nprocs"
+        },
+        {
+            "id": "omp_nthreads",
+            "type": "Number",
+            "value-key": "[OMP_NTHREADS]",
+            "description": "Maximum number of threads per process. (Default: 1)",
+            "optional": true,
+            "command-line-flag": "--omp-nthreads",
+            "integer": true,
+            "name": "omp_nthreads"
+        },
+        {
+            "id": "mem_mb",
+            "type": "String",
+            "value-key": "[MEM_MB]",
+            "description": "Upper bound memory limit, in megabytes, for XCP-D processes.",
+            "optional": true,
+            "command-line-flag": "--mem-mb",
+            "name": "mem_mb"
+        },
+        {
+            "id": "low_mem",
+            "type": "Flag",
+            "value-key": "[LOW_MEM]",
+            "description": "Attempt to reduce memory usage (will increase disk usage in working directory). IMPORTANT: At the moment, this option has no effect.",
+            "optional": true,
+            "command-line-flag": "--low-mem",
+            "name": "low_mem"
+        },
+        {
+            "id": "use_plugin",
+            "type": "String",
+            "value-key": "[USE_PLUGIN]",
+            "description": "Nipype plugin configuration file. For more information, see https://nipype.readthedocs.io/en/0.11.0/users/plugins.html.",
+            "optional": true,
+            "command-line-flag": "--use-plugin",
+            "name": "use_plugin"
+        },
+        {
+            "id": "verbose",
+            "type": "String",
+            "value-key": "[VERBOSE]",
+            "description": "Increases log verbosity for each occurrence. Debug level is '-vvv'.",
+            "optional": true,
+            "value-choices": [
+                "-v",
+                "-vv",
+                "-vvv"
+            ],
+            "name": "verbose"
+        },
+        {
+            "id": "input_type",
+            "type": "String",
+            "value-key": "[INPUT_TYPE]",
+            "description": "The pipeline used to generate the preprocessed derivatives. The default pipeline is 'fmriprep'. The 'dcan', 'hcp', 'nibabies', and 'ukb' pipelines are also supported. 'nibabies' assumes the same structure as 'fmriprep'.",
+            "optional": true,
+            "command-line-flag": "--input-type",
+            "value-choices": [
+                "fmriprep",
+                "dcan",
+                "hcp",
+                "nibabies",
+                "ukb"
+            ],
+            "name": "input_type"
+        },
+        {
+            "id": "file_format",
+            "type": "String",
+            "value-key": "[FILE_FORMAT]",
+            "description": "The file format of the input data. If 'auto', the file format will be inferred from the processing mode. If 'cifti', the input data are assumed to be in CIFTI format. If 'nifti', the input data are assumed to be in NIfTI format. (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--file-format",
+            "value-choices": [
+                "auto",
+                "cifti",
+                "nifti"
+            ],
+            "name": "file_format"
+        },
+        {
+            "id": "dummy_scans",
+            "type": "Number",
+            "value-key": "[DUMMY_SCANS]",
+            "description": "Number of volumes to remove from the beginning of each run. If set to 'auto', XCP-D will extract non-steady-state volume indices from the preprocessing derivatives' confounds file. (Default: 0)",
+            "optional": true,
+            "command-line-flag": "--dummy-scans",
+            "integer": true,
+            "name": "dummy_scans"
+        },
+        {
+            "id": "despike",
+            "description": "Despike the BOLD data before postprocessing. If not provided, the despike option will be inferred from the 'mode'. If provided without an argument, despiking will be enabled. If provided with an argument (y or n), the value of the argument will be used. 'y' enables despiking. 'n' disables despiking. (Default: \"auto\")",
+            "type": "String",
+            "value-key": "[DESPIKE]",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "max-list-entries": 1,
+            "value-choices": [
+                "y",
+                "n"
+            ],
+            "command-line-flag": "--despike",
+            "name": "despike"
+        },
+        {
+            "id": "nuisance_regressors",
+            "type": "String",
+            "value-key": "[NUISANCE_REGRESSORS]",
+            "description": "Nuisance parameters to be selected. This may be a string indicating one of XCP-D's built-in nuisance regression strategies (e.g., '36P') or a path to a YAML file formatted according to XCP-D's confound configuration file format. Descriptions of each of the built-in options are included in XCP-D's documentation. (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--nuisance-regressors",
+            "name": "nuisance_regressors"
+        },
+        {
+            "id": "smoothing",
+            "type": "String",
+            "value-key": "[SMOOTHING]",
+            "description": "Full-width at half maximum (FWHM), in millimeters, of the Gaussian smoothing kernel to apply to the denoised BOLD data. Set to 0 to disable smoothing. The default value is \"auto\", which uses the default smoothing value for the processing mode. (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--smoothing",
+            "name": "smoothing"
+        },
+        {
+            "id": "combine_runs",
+            "description": "After denoising, concatenate each derivative from each task across runs. If not provided, the combine_runs option will be inferred from the processing mode. If provided without an argument, concatenation will be enabled. If provided with an argument (y or n), the value of the argument will be used. 'y' enables concatenation. 'n' disables concatenation. (Default: \"auto\")",
+            "type": "String",
+            "value-key": "[COMBINE_RUNS]",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "max-list-entries": 1,
+            "value-choices": [
+                "y",
+                "n"
+            ],
+            "command-line-flag": "--combine-runs",
+            "name": "combine_runs"
+        },
+        {
+            "id": "skip",
+            "type": "String",
+            "value-key": "[SKIP]",
+            "description": "Skip specific outputs during postprocessing. Options include: 'alff' (skip ALFF calculation), 'reho' (skip ReHo calculation), 'parcellation' (skip parcellation and time series extraction), 'connectivity' (skip functional connectivity calculations). Multiple options can be specified. Note: Skipping 'parcellation' will also skip 'connectivity'. Skipping 'connectivity' alone will still perform parcellation to extract time series, but will not compute correlation matrices. Skipping 'alff' is only relevant when bandpass filtering is enabled.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--skip",
+            "value-choices": [
+                "alff",
+                "reho",
+                "parcellation",
+                "connectivity"
+            ],
+            "name": "skip"
+        },
+        {
+            "id": "motion_filter_type",
+            "type": "String",
+            "value-key": "[MOTION_FILTER_TYPE]",
+            "description": "Type of filter to use for removing respiratory artifact from motion regressors.\nIf not set, no filter will be applied.\n\nIf the filter type is set to \"notch\", then both ``band-stop-min`` and ``band-stop-max``\nmust be defined.\nIf the filter type is set to \"lp\", then only ``band-stop-min`` must be defined.\nIf the filter type is set to \"none\", then no filter will be applied.\n",
+            "optional": true,
+            "command-line-flag": "--motion-filter-type",
+            "value-choices": [
+                "lp",
+                "notch",
+                "none"
+            ],
+            "name": "motion_filter_type"
+        },
+        {
+            "id": "band_stop_min",
+            "type": "Number",
+            "value-key": "[BAND_STOP_MIN]",
+            "description": "Lower frequency for the motion parameter filter, in breaths-per-minute (bpm).\nMotion filtering is only performed if ``motion-filter-type`` is not None.\nIf used with the \"lp\" ``motion-filter-type``, this parameter essentially corresponds to a\nlow-pass filter (the maximum allowed frequency in the filtered data).\nThis parameter is used in conjunction with ``motion-filter-order`` and ``band-stop-max``.\n\nWhen ``motion-filter-type`` is set to \"lp\" (low-pass filter), another commonly-used value for\nthis parameter is 6 BPM (equivalent to 0.1 Hertz), based on Gratton et al. (2020).\n",
+            "optional": true,
+            "command-line-flag": "--band-stop-min",
+            "name": "band_stop_min"
+        },
+        {
+            "id": "band_stop_max",
+            "type": "Number",
+            "value-key": "[BAND_STOP_MAX]",
+            "description": "Upper frequency for the band-stop motion filter, in breaths-per-minute (bpm).\nMotion filtering is only performed if ``motion-filter-type`` is not None.\nThis parameter is only used if ``motion-filter-type`` is set to \"notch\".\nThis parameter is used in conjunction with ``motion-filter-order`` and ``band-stop-min``.\n",
+            "optional": true,
+            "command-line-flag": "--band-stop-max",
+            "name": "band_stop_max"
+        },
+        {
+            "id": "motion_filter_order",
+            "type": "Number",
+            "value-key": "[MOTION_FILTER_ORDER]",
+            "description": "Number of filter coefficients for the motion parameter filter. If the motion filter type is 'lp', the order is divided by 2 as filtfilt applies the filter twice. If the motion filter type is 'notch', the order is divided by 4 as iirnotch is a second-order filter and filtfilt applies the filter twice. Make sure to set this parameter to a multiple of 2 if you choose the 'lp' filter and a multiple of 4 if you choose the 'notch' filter. (Default: 4)",
+            "optional": true,
+            "command-line-flag": "--motion-filter-order",
+            "integer": true,
+            "name": "motion_filter_order"
+        },
+        {
+            "id": "head_radius",
+            "type": "Number",
+            "value-key": "[HEAD_RADIUS]",
+            "description": "Head radius used to calculate framewise displacement, in mm. The default value is 50 mm, which is recommended for adults. For infants, we recommend a value of 35 mm. A value of 'auto' is also supported, in which case the brain radius is estimated from the preprocessed brain mask by treating the mask as a sphere. The auto option typically results in a higher estimate than the default. (Default: 50)",
+            "optional": true,
+            "command-line-flag": "--head-radius",
+            "integer": true,
+            "name": "head_radius"
+        },
+        {
+            "id": "fd_thresh",
+            "type": "String",
+            "value-key": "[FD_THRESH]",
+            "description": "Framewise displacement (FD) threshold for censoring, in mm. Any volumes with an FD value greater than the threshold will be removed from the denoised BOLD data. A threshold of <=0 will disable censoring completely. The default value is \"auto\", which uses the default FD threshold for the processing mode. (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--fd-thresh",
+            "name": "fd_thresh"
+        },
+        {
+            "id": "min_time",
+            "type": "Number",
+            "value-key": "[MIN_TIME]",
+            "description": "Post-scrubbing threshold to apply to individual runs in the dataset.\nThis threshold determines the minimum amount of time, in seconds,\nneeded to post-process a given run, once high-motion outlier volumes are removed.\nThis will have no impact if scrubbing is disabled\n(i.e., if the FD threshold is zero or negative).\nThis parameter can be disabled by providing a zero or a negative value.\n\nThe default is 240 (4 minutes). (Default: 240)",
+            "optional": true,
+            "command-line-flag": "--min-time",
+            "name": "min_time"
+        },
+        {
+            "id": "output_type",
+            "type": "String",
+            "value-key": "[OUTPUT_TYPE]",
+            "description": "The type of output to generate. If 'auto', the output type will be inferred from the processing mode. If 'censored', the BOLD outputs (dense and parcellated time series) will be censored. If 'interpolated', the BOLD outputs (dense and parcellated time series) will be interpolated. This parameter has no effect on correlation matrix outputs. (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--output-type",
+            "value-choices": [
+                "auto",
+                "censored",
+                "interpolated"
+            ],
+            "name": "output_type"
+        },
+        {
+            "id": "disable_bandpass_filter",
+            "type": "Flag",
+            "value-key": "[DISABLE_BANDPASS_FILTER]",
+            "description": "Disable bandpass filtering. If bandpass filtering is disabled, then ALFF derivatives will not be calculated.",
+            "optional": true,
+            "command-line-flag": "--disable-bandpass-filter",
+            "name": "disable_bandpass_filter"
+        },
+        {
+            "id": "lower_bpf",
+            "type": "Number",
+            "value-key": "[LOWER_BPF]",
+            "description": "Lower cut-off frequency (Hz) for the Butterworth bandpass filter to be applied to the denoised BOLD data. Set to 0.0 or negative to disable high-pass filtering. See Satterthwaite et al. (2013). (Default: 0.01)",
+            "optional": true,
+            "command-line-flag": "--lower-bpf",
+            "name": "lower_bpf"
+        },
+        {
+            "id": "upper_bpf",
+            "type": "Number",
+            "value-key": "[UPPER_BPF]",
+            "description": "Upper cut-off frequency (Hz) for the Butterworth bandpass filter to be applied to the denoised BOLD data. Set to 0.0 or negative to disable low-pass filtering. See Satterthwaite et al. (2013). (Default: 0.08)",
+            "optional": true,
+            "command-line-flag": "--upper-bpf",
+            "name": "upper_bpf"
+        },
+        {
+            "id": "bpf_order",
+            "type": "Number",
+            "value-key": "[BPF_ORDER]",
+            "description": "Number of filter coefficients for the Butterworth bandpass filter. (Default: 2)",
+            "optional": true,
+            "command-line-flag": "--bpf-order",
+            "integer": true,
+            "name": "bpf_order"
+        },
+        {
+            "id": "atlases",
+            "type": "String",
+            "value-key": "[ATLASES]",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--atlases",
+            "name": "atlases"
+        },
+        {
+            "id": "skip_parcellation_flag",
+            "type": "Flag",
+            "optional": true,
+            "value-key": "[SKIP_PARCELLATION_FLAG]",
+            "command-line-flag": "--skip-parcellation",
+            "name": "skip_parcellation_flag"
+        },
+        {
+            "id": "min_coverage",
+            "type": "String",
+            "value-key": "[MIN_COVERAGE]",
+            "description": "Coverage threshold to apply to parcels in each atlas. Any parcels with lower coverage than the threshold will be replaced with NaNs. Must be a value between zero and one, indicating proportion of the parcel. (Default: \"auto\")",
+            "optional": true,
+            "command-line-flag": "--min-coverage",
+            "name": "min_coverage"
+        },
+        {
+            "id": "output_run_wise_correlations",
+            "description": "Output run-wise correlation matrices. (Default: \"auto\")",
+            "type": "String",
+            "value-key": "[OUTPUT_RUN_WISE_CORRELATIONS]",
+            "list": true,
+            "min-list-entries": 0,
+            "max-list-entries": 1,
+            "optional": true,
+            "value-choices": [
+                "y",
+                "n"
+            ],
+            "command-line-flag": "--output-run-wise-correlations",
+            "name": "output_run_wise_correlations"
+        },
+        {
+            "id": "create_matrices",
+            "type": "String",
+            "value-key": "[CREATE_MATRICES]",
+            "description": "If used, this parameter will produce correlation matrices limited to each requested amount of time\nfrom the concatenated BOLD data.\nIf there is more than the required amount of low-motion data,\nthen volumes will be randomly selected to produce correlation matrices with the exact\namounts of time requested.\nIf there is less than the required amount of 'good' data,\nthen the corresponding correlation matrix will not be produced.\n\nThis option requires that `--combine-runs` be enabled.\nIf run concatenation is not enabled, using this option will raise an error.\n\nThis option is not supported in the \"linc\" mode.\n",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--create-matrices",
+            "name": "create_matrices"
+        },
+        {
+            "id": "random_seed",
+            "type": "Number",
+            "value-key": "[RANDOM_SEED]",
+            "description": "Initialize the random seed for the '--create-matrices' option.",
+            "optional": true,
+            "command-line-flag": "--random-seed",
+            "integer": true,
+            "name": "random_seed"
+        },
+        {
+            "id": "linc_qc",
+            "description": "Run LINC QC.\n\nThis will calculate QC metrics from the LINC pipeline. (Default: \"auto\")",
+            "type": "String",
+            "value-key": "[LINC_QC]",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "max-list-entries": 1,
+            "value-choices": [
+                "y",
+                "n"
+            ],
+            "command-line-flag": "--linc-qc",
+            "name": "linc_qc"
+        },
+        {
+            "id": "abcc_qc",
+            "description": "Run ABCC QC.\n\nThis will create the DCAN executive summary, including a brainsprite visualization of the\nanatomical tissue segmentation, and an HDF5 file containing motion levels at different thresholds. (Default: \"auto\")",
+            "type": "String",
+            "value-key": "[ABCC_QC]",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "max-list-entries": 1,
+            "value-choices": [
+                "y",
+                "n"
+            ],
+            "command-line-flag": "--abcc-qc",
+            "name": "abcc_qc"
+        },
+        {
+            "id": "report_output_level",
+            "type": "String",
+            "value-key": "[REPORT_OUTPUT_LEVEL]",
+            "description": "Where should the html reports be written? \"root\" will write them to the --output-dir. \"subject\" will write them into each subject's directory. \"session\" will write them into each session's directory. The default is \"auto\", which will default to \"root\" for \"none\", \"linc\", and \"nichart\" modes, and \"session\" for \"abcd\" and \"hbcd\" modes.",
+            "optional": true,
+            "command-line-flag": "--report-output-level",
+            "value-choices": [
+                "root",
+                "subject",
+                "session"
+            ],
+            "name": "report_output_level"
+        },
+        {
+            "id": "aggregate_session_reports",
+            "type": "Number",
+            "value-key": "[AGGREGATE_SESSION_REPORTS]",
+            "description": "Maximum number of sessions aggregated in one subject's visual report. If exceeded, visual reports are split by session. (Default: 4)",
+            "optional": true,
+            "command-line-flag": "--aggregate-session-reports",
+            "integer": true,
+            "name": "aggregate_session_reports"
+        },
+        {
+            "id": "output_layout",
+            "type": "String",
+            "value-key": "[OUTPUT_LAYOUT]",
+            "description": "Output layout for the BOLD data. If \"bids\", the output will be in BIDS format, similar to fMRIPrep output. If \"multiverse\", \"xcp_d\" will be appended to output_dir, with a hash built from the configuration. (Default: \"bids\")",
+            "optional": true,
+            "command-line-flag": "--output-layout",
+            "value-choices": [
+                "bids",
+                "multiverse"
+            ],
+            "name": "output_layout"
+        },
+        {
+            "id": "work_dir",
+            "type": "File",
+            "value-key": "[WORK_DIR]",
+            "description": "Path to working directory, where intermediate results should be stored.",
+            "optional": true,
+            "command-line-flag": "--work-dir",
+            "name": "work_dir"
+        },
+        {
+            "id": "clean_workdir",
+            "type": "Flag",
+            "value-key": "[CLEAN_WORKDIR]",
+            "description": "Clears working directory of contents. Use of this flag is not recommended when running concurrent processes of XCP-D.",
+            "optional": true,
+            "command-line-flag": "--clean-workdir",
+            "name": "clean_workdir"
+        },
+        {
+            "id": "resource_monitor",
+            "type": "Flag",
+            "value-key": "[RESOURCE_MONITOR]",
+            "description": "Enable Nipype's resource monitoring to keep track of memory and CPU usage.",
+            "optional": true,
+            "command-line-flag": "--resource-monitor",
+            "name": "resource_monitor"
+        },
+        {
+            "id": "config_file",
+            "type": "String",
+            "value-key": "[CONFIG_FILE]",
+            "description": "Use pre-generated configuration file. Values in file will be overridden by command-line arguments.",
+            "optional": true,
+            "command-line-flag": "--config-file",
+            "name": "config_file"
+        },
+        {
+            "id": "write_graph",
+            "type": "Flag",
+            "value-key": "[WRITE_GRAPH]",
+            "description": "Write workflow graph.",
+            "optional": true,
+            "command-line-flag": "--write-graph",
+            "name": "write_graph"
+        },
+        {
+            "id": "stop_on_first_crash",
+            "type": "Flag",
+            "value-key": "[STOP_ON_FIRST_CRASH]",
+            "description": "Force stopping on first crash, even if a work directory was specified.",
+            "optional": true,
+            "command-line-flag": "--stop-on-first-crash",
+            "name": "stop_on_first_crash"
+        },
+        {
+            "id": "notrack",
+            "type": "Flag",
+            "value-key": "[NOTRACK]",
+            "description": "Opt out of sending tracking information.",
+            "optional": true,
+            "command-line-flag": "--notrack",
+            "name": "notrack"
+        },
+        {
+            "id": "debug",
+            "type": "String",
+            "value-key": "[DEBUG]",
+            "description": "Debug mode(s) to enable. 'all' is alias for all available modes.",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 1,
+            "command-line-flag": "--debug",
+            "value-choices": [
+                "pdb",
+                "all"
+            ],
+            "name": "debug"
+        },
+        {
+            "id": "fs_license_file",
+            "type": "String",
+            "value-key": "[FS_LICENSE_FILE]",
+            "description": "Path to FreeSurfer license key file. Get it (for free) by registering at https://surfer.nmr.mgh.harvard.edu/registration.html. This is not currently required, but may be in the future.",
+            "optional": true,
+            "command-line-flag": "--fs-license-file",
+            "name": "fs_license_file"
+        },
+        {
+            "id": "md_only_boilerplate",
+            "type": "Flag",
+            "value-key": "[MD_ONLY_BOILERPLATE]",
+            "description": "Skip generation of HTML and LaTeX formatted citation with pandoc",
+            "optional": true,
+            "command-line-flag": "--md-only-boilerplate",
+            "name": "md_only_boilerplate"
+        },
+        {
+            "id": "boilerplate_only",
+            "type": "Flag",
+            "value-key": "[BOILERPLATE_ONLY]",
+            "description": "generate boilerplate only",
+            "optional": true,
+            "command-line-flag": "--boilerplate-only",
+            "name": "boilerplate_only"
+        },
+        {
+            "id": "reports_only",
+            "type": "Flag",
+            "value-key": "[REPORTS_ONLY]",
+            "description": "only generate reports, don't run workflows. This will only rerun report aggregation, not reportlet generation for specific nodes.",
+            "optional": true,
+            "command-line-flag": "--reports-only",
+            "name": "reports_only"
+        },
+        {
+            "id": "warp_surfaces_native2std",
+            "description": "If used, a workflow will be run to warp native-space (``fsnative``) reconstructed cortical\nsurfaces (``surf.gii`` files) produced by Freesurfer into standard (``fsLR``) space.\nAdditionally, the fsLR-space surfaces will be warped such that they can be overlaid on the\nMNI152NLin6Asym template.\nThese surface files are primarily used for visual quality assessment.\n\n**IMPORTANT**: This parameter can only be run if the --file-format flag is set to cifti. (Default: \"auto\")",
+            "type": "String",
+            "value-key": "[WARP_SURFACES_NATIVE2STD]",
+            "optional": true,
+            "list": true,
+            "min-list-entries": 0,
+            "max-list-entries": 1,
+            "value-choices": [
+                "y",
+                "n"
+            ],
+            "command-line-flag": "--warp-surfaces-native2std",
+            "name": "warp_surfaces_native2std"
+        }
+    ]
+}

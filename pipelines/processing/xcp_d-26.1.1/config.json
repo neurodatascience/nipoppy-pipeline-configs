@@ -1,0 +1,34 @@
+{
+    "NAME": "xcp_d",
+    "VERSION": "26.1.1",
+    "CONTAINER_INFO": {
+        "FILE": "[[NIPOPPY_DPATH_CONTAINERS]]/[[PIPELINE_NAME]]_[[PIPELINE_VERSION]].sif",
+        "URI": "docker://pennlinc/[[PIPELINE_NAME]]:[[PIPELINE_VERSION]]"
+    },
+    "CONTAINER_CONFIG": {
+        "ENV_VARS": {
+            "TEMPLATEFLOW_HOME": "[[TEMPLATEFLOW_HOME]]"
+        },
+        "BIND_PATHS": [
+            "[[FREESURFER_LICENSE_FILE]]",
+            "[[TEMPLATEFLOW_HOME]]"
+        ]
+    },
+    "STEPS": [
+        {
+            "INVOCATION_FILE": "invocation.json",
+            "DESCRIPTOR_FILE": "descriptor.json",
+            "ANALYSIS_LEVEL": "participant_session",
+            "TRACKER_CONFIG_FILE": "tracker.json",
+            "GENERATE_PYBIDS_DATABASE": false,
+            "HPC_CONFIG_FILE": "hpc.json"
+        }
+    ],
+    "VARIABLES": {
+        "FMRIPREP_VERSION": "Version of fMRIPrep used to generate the input data",
+        "FREESURFER_LICENSE_FILE": "Path to FreeSurfer license file",
+        "TEMPLATEFLOW_HOME": "Path to the directory where TemplateFlow will store templates (can be empty)"
+    },
+    "PIPELINE_TYPE": "processing",
+    "SCHEMA_VERSION": "1.0"
+}
