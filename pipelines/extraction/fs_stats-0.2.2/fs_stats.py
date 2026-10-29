@@ -74,7 +74,8 @@ def _get_fs_version(dpath, fname_version=FNAME_FS_VERSION, re_version=RE_FS_VERS
     fs_version = None
     for fpath in Path(dpath).rglob(fname_version):
         if fpath.is_file():
-            if match := re_version.search(fpath.read_text()):
+            match = re_version.search(fpath.read_text())
+            if match:
                 fs_version = match.group()
                 break
     return fs_version
