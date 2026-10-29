@@ -1,6 +1,6 @@
 {
     "NAME": "fs_stats",
-    "VERSION": "0.2.2",
+    "VERSION": "0.3.0",
     "CONTAINER_INFO": {
         "FILE": "[[NIPOPPY_DPATH_CONTAINERS]]/freesurfer_7.3.2.sif",
         "URI": "docker://freesurfer/freesurfer:7.3.2"

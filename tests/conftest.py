@@ -53,7 +53,7 @@ PIPELINE_INFO_BY_TYPE: dict[PipelineTypeEnum, Iterable[tuple[str, str, str]]] = 
     ),
     PipelineTypeEnum.EXTRACTION: (
         ("fs_stats", "0.2.1", "default"),
-        ("fs_stats", "0.2.2", "default"),
+        ("fs_stats", "0.3.0", "default"),
         ("qsirecon", "1.1.0", "default"),
         ("static_FC", "0.1.0", "default"),
     ),
