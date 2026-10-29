@@ -107,6 +107,10 @@ def test_descriptors(fpath_descriptor: Path):
 
     if descriptor["name"] not in ("static_FC", "fs_stats"):
         assert command_line.lstrip()[0] != "[", str(fpath_descriptor)
+    elif descriptor["name"] == "fs_stats" and descriptor["tool-version"] == "0.2.2":
+        assert command_line.lstrip().startswith("fspython [SCRIPT_PATH]"), str(
+            fpath_descriptor
+        )
     else:
         assert command_line.startswith("python [SCRIPT_PATH]"), str(fpath_descriptor)
 
