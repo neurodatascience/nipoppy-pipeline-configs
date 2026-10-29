@@ -1,6 +1,6 @@
 {
     "NAME": "fs_stats",
-    "VERSION": "0.2.2",
+    "VERSION": "0.3.0",
     "CONTAINER_INFO": {
         "FILE": "[[NIPOPPY_DPATH_CONTAINERS]]/freesurfer_7.3.2.sif",
         "URI": "docker://freesurfer/freesurfer:7.3.2"
@@ -10,7 +10,8 @@
             "FS_LICENSE": "[[FREESURFER_LICENSE_FILE]]"
         },
         "BIND_PATHS": [
-            "[[FREESURFER_LICENSE_FILE]]"
+            "[[FREESURFER_LICENSE_FILE]]",
+            "[[NIPOPPY_DPATH_PIPELINES]]"
         ]
     },
     "PROC_DEPENDENCIES": [
@@ -22,13 +23,6 @@
     "STEPS": [
         {
             "INVOCATION_FILE": "invocation.json",
-            "DESCRIPTOR_FILE": "descriptor.json",
-            "HPC_CONFIG_FILE": "hpc.json",
-            "ANALYSIS_LEVEL": "group"
-        },
-        {
-            "NAME": "docker",
-            "INVOCATION_FILE": "invocation-docker.json",
             "DESCRIPTOR_FILE": "descriptor.json",
             "HPC_CONFIG_FILE": "hpc.json",
             "ANALYSIS_LEVEL": "group"

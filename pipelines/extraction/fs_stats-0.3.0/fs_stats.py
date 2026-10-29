@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """Extractor for FreeSurfer aseg/aparc stats and quality control metrics."""
 
+from __future__ import annotations
+
 import argparse
 import os
 import re
@@ -8,7 +10,6 @@ import shlex
 import subprocess
 import sys
 import tempfile
-import warnings
 from collections import defaultdict
 from pathlib import Path
 from typing import Optional, Tuple, Union
@@ -55,6 +56,13 @@ def _print_error_and_exit(message: str):
     sys.exit(f"\nERROR: {message}\nStopping fs_stats\n")
 
 
+def _removeprefix(string: str, prefix: str) -> str:
+    """Backport of str.removeprefix for Python<3.9."""
+    if prefix and string.startswith(prefix):
+        return string[len(prefix) :]
+    return string
+
+
 def _get_fs_version(dpath, fname_version=FNAME_FS_VERSION, re_version=RE_FS_VERSION):
     """
     Search for a version file and extract FreeSurfer version from it.
@@ -66,7 +74,8 @@ def _get_fs_version(dpath, fname_version=FNAME_FS_VERSION, re_version=RE_FS_VERS
     fs_version = None
     for fpath in Path(dpath).rglob(fname_version):
         if fpath.is_file():
-            if match := re_version.search(fpath.read_text()):
+            match = re_version.search(fpath.read_text())
+            if match:
                 fs_version = match.group()
                 break
     return fs_version
@@ -95,7 +104,7 @@ def _load_fs_stats_table(
         The TSV file as a DataFrame with a subject index.
     """
     df = pd.read_csv(tsv_path, sep="\t", index_col=0)
-    df.index = df.index.str.removeprefix(sub_prefix)
+    df.index = df.index.str.replace(f"^{re.escape(sub_prefix)}", "", regex=True)
     df.index.name = sub_colname
     return df
 
@@ -115,7 +124,6 @@ def _run_fs_stats2table_command(
     fs_subjects_dir: Union[str, os.PathLike],
     subjects_list: list[str],
     tsv_path: Union[str, os.PathLike],
-    container_command_and_args: Optional[list[str]] = None,
     fs_args: Optional[list[str]] = None,
     sub_colname: str = DEFAULT_SUB_COLNAME,
     sub_prefix: str = DEFAULT_SUB_PREFIX,
@@ -133,8 +141,6 @@ def _run_fs_stats2table_command(
         List of subjects to process (i.e. subdirectories in fs_subjects_dir).
     tsv_path : Union[str, os.PathLike]
         Path to the output TSV file for this command.
-    container_command_and_args : Optional[list[str]], optional
-        Container command and arguments to prepend to actual FreeSurfer command.
     fs_args : Optional[list[str]], optional
         Other arguments for to FreeSurfer command.
     sub_colname : str, optional
@@ -150,13 +156,11 @@ def _run_fs_stats2table_command(
         The output TSV file as a DataFrame.
     """
     # set defaults
-    container_command_and_args = container_command_and_args or []
     fs_args = fs_args or []
 
     # process args for subprocess
     args = (
-        container_command_and_args
-        + [fs_command, "--subjects"]
+        [fs_command, "--subjects"]
         + subjects_list
         + [f"--tablefile={tsv_path}"]
         + fs_args
@@ -166,8 +170,6 @@ def _run_fs_stats2table_command(
     # set environment variables
     env_vars = {
         "SUBJECTS_DIR": fs_subjects_dir,
-        "APPTAINERENV_SUBJECTS_DIR": fs_subjects_dir,
-        "SINGULARITYENV_SUBJECTS_DIR": fs_subjects_dir,
     }
     env = os.environ.copy()
     env.update(env_vars)
@@ -196,7 +198,6 @@ def _run_asegstats2table(
     fs_subjects_dir: Union[str, os.PathLike],
     subjects_list: list[str],
     tsv_path: Union[str, os.PathLike],
-    container_command_and_args: Optional[list[str]] = None,
     optional_args: Optional[list[str]] = None,
     sub_colname: str = DEFAULT_SUB_COLNAME,
     sub_prefix: str = DEFAULT_SUB_PREFIX,
@@ -204,7 +205,6 @@ def _run_asegstats2table(
 ) -> pd.DataFrame:
     """Wrap _run_fs_command to run asegstats2table."""
     return _run_fs_stats2table_command(
-        container_command_and_args=container_command_and_args,
         fs_command="asegstats2table",
         fs_subjects_dir=fs_subjects_dir,
         subjects_list=subjects_list,
@@ -221,7 +221,6 @@ def _run_aparcstats2table(
     subjects_list: list[str],
     tsv_path: Union[str, os.PathLike],
     hemi: str,
-    container_command_and_args: Optional[list[str]] = None,
     optional_args: Optional[list[str]] = None,
     sub_colname: str = DEFAULT_SUB_COLNAME,
     sub_prefix: str = DEFAULT_SUB_PREFIX,
@@ -229,7 +228,6 @@ def _run_aparcstats2table(
 ) -> pd.DataFrame:
     """Wrap _run_fs_command to run aparcstats2table."""
     return _run_fs_stats2table_command(
-        container_command_and_args=container_command_and_args,
         fs_command="aparcstats2table",
         fs_subjects_dir=fs_subjects_dir,
         subjects_list=subjects_list,
@@ -244,7 +242,6 @@ def _run_aparcstats2table(
 def _run_mris_euler_number(
     surf_path: Union[str, os.PathLike],
     out_path: Union[str, os.PathLike],
-    container_command_and_args: Optional[list[str]] = None,
     verbose: bool = False,
 ) -> int:
     """Return the number of holes computed by FreeSurfer's mris_euler_number.
@@ -255,8 +252,6 @@ def _run_mris_euler_number(
         Input surface file.
     out_path : Union[str, os.PathLike]
         File to write the number of holes to.
-    container_command_and_args : Optional[list[str]], optional
-        Container command and arguments to prepend to actual FreeSurfer command.
     verbose : bool, optional
         Passed to _run_subprocess.
 
@@ -264,10 +259,8 @@ def _run_mris_euler_number(
     -------
     int
     """
-    container_command_and_args = container_command_and_args or []
-
     # process args for subprocess
-    args = container_command_and_args + ["mris_euler_number", "-o", out_path, surf_path]
+    args = ["mris_euler_number", "-o", out_path, surf_path]
     args = [str(arg) for arg in args]
 
     # run command with some feedback
@@ -283,7 +276,6 @@ def _run_mri_cnr(
     surf_dir: Union[str, os.PathLike],
     vol_paths: list[Union[str, os.PathLike]],
     out_path: Union[str, os.PathLike],
-    container_command_and_args: Optional[list[str]] = None,
     verbose: bool = False,
 ) -> pd.DataFrame:
     """Return the (2*len(vol_paths), 8) CNR values from FreeSurfer's mri_cnr.
@@ -296,8 +288,6 @@ def _run_mri_cnr(
         _description_
     out_path : Union[str, os.PathLike]
         _description_
-    container_command_and_args : Optional[list[str]], optional
-        Container command and arguments to prepend to actual FreeSurfer command.
     verbose : bool, optional
         Passed to _run_subprocess.
 
@@ -305,12 +295,8 @@ def _run_mri_cnr(
     -------
     pd.DataFrame
     """
-    container_command_and_args = container_command_and_args or []
-
     # process args for subprocess
-    args = (
-        container_command_and_args + ["mri_cnr", "-l", out_path, surf_dir] + vol_paths
-    )
+    args = ["mri_cnr", "-l", out_path, surf_dir] + vol_paths
     args = [str(arg) for arg in args]
 
     # run command with some feedback
@@ -330,9 +316,7 @@ def _run_mri_cnr(
     return df
 
 
-def _get_subject_list(
-    fs_subjects_dir: Union[str, os.PathLike], using_container=False
-) -> list[str]:
+def _get_subject_list(fs_subjects_dir: Union[str, os.PathLike]) -> list[str]:
     """Get a list of subjects in a FreeSurfer subjects directory."""
     subject_list = []
     for dpath in Path(fs_subjects_dir).iterdir():
@@ -343,13 +327,6 @@ def _get_subject_list(
             if not dpath.resolve().exists():
                 _print_error_and_exit(f"Found broken symlink: {dpath}")
 
-            # potential source of error that leads to unclear FreeSurfer error message
-            if using_container:
-                warnings.warn(
-                    "Found symlink(s) in the subjects directory. Make sure the symlink "
-                    "target path(s) are mounted correctly in the container."
-                )
-
         subject_list.append(dpath.name)
 
     if not subject_list:
@@ -357,21 +334,8 @@ def _get_subject_list(
     return subject_list
 
 
-def _inject_subjects_dir_path(
-    subjects_dir_path: Union[str, os.PathLike],
-    container_command_and_args: Optional[list[str]] = None,
-) -> list[str]:
-    if container_command_and_args is None:
-        return None
-    return [
-        x.replace("[subjects_dir]", str(subjects_dir_path))
-        for x in container_command_and_args
-    ]
-
-
 def run_single_aseg(
     subjects_dir_path: Union[str, os.PathLike],
-    container_command_and_args: Optional[list[str]] = None,
     measures: list[str] = DEFAULT_ASEG_MEASURES,
     optional_args: Optional[list[str]] = None,
     sub_colname: str = DEFAULT_SUB_COLNAME,
@@ -387,8 +351,6 @@ def run_single_aseg(
     ----------
     subjects_dir_path : Union[str, os.PathLike]
         Path to the FreeSurfer subjects directory.
-    container_command_and_args : Optional[list[str]], optional
-        Passed to _run_asegstats2table.
     measures: list[str], optional
         List of measures to use for asegstats2table.
     optional_args : Optional[list[str]], optional
@@ -406,9 +368,7 @@ def run_single_aseg(
         Keys are measure names.
         Values are dataframes for aseg stats, with subject index.
     """
-    subjects = _get_subject_list(
-        subjects_dir_path, using_container=container_command_and_args
-    )
+    subjects = _get_subject_list(subjects_dir_path)
     dfs_aseg = {}
 
     # create a temporary directory to store the stats files (will be deleted)
@@ -426,7 +386,6 @@ def run_single_aseg(
                 fs_subjects_dir=subjects_dir_path,
                 subjects_list=subjects,
                 tsv_path=tmpdir / f"aseg_stats-{measure}.tsv",
-                container_command_and_args=container_command_and_args,
                 optional_args=optional_args_all,
                 sub_colname=sub_colname,
                 sub_prefix=sub_prefix,
@@ -440,7 +399,6 @@ def run_single_aseg(
 
 def run_single_aparc(
     subjects_dir_path: Union[str, os.PathLike],
-    container_command_and_args: Optional[list[str]] = None,
     parcellations: list[str] = DEFAULT_APARC_PARCELLATIONS,
     measures: list[str] = DEFAULT_APARC_MEASURES,
     optional_args: Optional[list[str]] = None,
@@ -457,8 +415,6 @@ def run_single_aparc(
     ----------
     subjects_dir_path : Union[str, os.PathLike]
         Path to the FreeSurfer subjects directory.
-    container_command_and_args : Optional[list[str]], optional
-        Passed _run_aparcstats2table.
     parcellations : list[str], optional
         List of parcellations to use for _run_aparcstats2table.
     measures: list[str], optional
@@ -478,9 +434,7 @@ def run_single_aparc(
         Keys are tuples of parcellation and measure names.
         Values are dataframes for aparc stats, with subject index.
     """
-    subjects = _get_subject_list(
-        subjects_dir_path, using_container=container_command_and_args
-    )
+    subjects = _get_subject_list(subjects_dir_path)
     dfs_aparc = {}
 
     # create a temporary directory to store the stats files (will be deleted)
@@ -507,7 +461,6 @@ def run_single_aparc(
                     subjects_list=subjects,
                     tsv_path=tmpdir / f"aparc_stats_lh-{parcellation}-{measure}.tsv",
                     hemi="lh",
-                    container_command_and_args=container_command_and_args,
                     optional_args=optional_args_all,
                     sub_colname=sub_colname,
                     sub_prefix=sub_prefix,
@@ -519,7 +472,6 @@ def run_single_aparc(
                     subjects_list=subjects,
                     tsv_path=tmpdir / f"aparc_stats_rh-{parcellation}-{measure}.tsv",
                     hemi="rh",
-                    container_command_and_args=container_command_and_args,
                     optional_args=optional_args_all,
                     sub_colname=sub_colname,
                     sub_prefix=sub_prefix,
@@ -569,7 +521,6 @@ def run_single_qc(
     euler_surf_paths: list[Union[str, os.PathLike]] = DEFAULT_EULER_SURF_PATHS,
     cnr_vol_paths: list[Union[str, os.PathLike]] = DEFAULT_CNR_VOL_PATHS,
     cnr_cols: list[str] = DEFAULT_CNR_COLS,
-    container_command_and_args: Optional[list[str]] = None,
     sub_colname: str = DEFAULT_SUB_COLNAME,
     sub_prefix: str = DEFAULT_SUB_PREFIX,
     verbose: bool = False,
@@ -591,8 +542,6 @@ def run_single_qc(
         relative to subjects_dir_path.
     cnr_cols : list[str], optional
         Names of the CNR measures to include in the QC metrics file for each volume.
-    container_command_and_args : Optional[list[str]], optional
-        Passed to _run_mris_euler_number and _run_mri_cnr.
     sub_colname : str, optional
         Column name to use for the subject ID in the final output file.
     sub_prefix : str, optional
@@ -611,12 +560,10 @@ def run_single_qc(
     print("Getting QC metrics")
 
     data_for_df = []
-    subjects = _get_subject_list(
-        subjects_dir_path, using_container=container_command_and_args
-    )
+    subjects = _get_subject_list(subjects_dir_path)
     with tempfile.TemporaryDirectory(dir=subjects_dir_path) as tmpdir:
         for subject in subjects:
-            data_subject = {sub_colname: subject.removeprefix(sub_prefix)}
+            data_subject = {sub_colname: _removeprefix(subject, sub_prefix)}
 
             # get number of holes in surface files based on Euler number
             for surf_path in euler_surf_paths:
@@ -626,7 +573,6 @@ def run_single_qc(
                         _run_mris_euler_number(
                             surf_path=subjects_dir_path / subject / surf_path,
                             out_path=out_path,
-                            container_command_and_args=container_command_and_args,
                             verbose=verbose,
                         )
                     )
@@ -642,7 +588,6 @@ def run_single_qc(
                         for vol_path in cnr_vol_paths
                     ],
                     out_path=Path(tmpdir) / f"{subject}_cnr.txt",
-                    container_command_and_args=container_command_and_args,
                     verbose=verbose,
                 )
             except subprocess.CalledProcessError:
@@ -665,7 +610,6 @@ def run_single_qc(
 
 def run_single(
     subjects_dir_path: Union[str, os.PathLike],
-    container_command_and_args: Optional[list[str]] = None,
     aseg_measures: list[str] = DEFAULT_ASEG_MEASURES,
     aparc_parcellations: list[str] = DEFAULT_APARC_PARCELLATIONS,
     aparc_measures: list[str] = DEFAULT_APARC_MEASURES,
@@ -685,8 +629,6 @@ def run_single(
     ----------
     subjects_dir_path : Union[str, os.PathLike]
         Path to the FreeSurfer subjects directory.
-    container_command_and_args : Optional[list[str]], optional
-        Passed to run_single_stats and run_single_qc.
     aseg_measures : list[str]
         List of measures to use for aparcstats2table.
     aparc_parcellations : list[str]
@@ -719,13 +661,9 @@ def run_single(
         columns. Second "dataframe" is None if with_qc is False.
     """
     subjects_dir_path = Path(subjects_dir_path).resolve()
-    container_command_and_args = _inject_subjects_dir_path(
-        subjects_dir_path, container_command_and_args
-    )
 
     dfs_aseg = run_single_aseg(
         subjects_dir_path=subjects_dir_path,
-        container_command_and_args=container_command_and_args,
         measures=aseg_measures,
         optional_args=aseg_optional_args,
         sub_colname=sub_colname,
@@ -735,7 +673,6 @@ def run_single(
 
     dfs_aparc = run_single_aparc(
         subjects_dir_path=subjects_dir_path,
-        container_command_and_args=container_command_and_args,
         parcellations=aparc_parcellations,
         measures=aparc_measures,
         optional_args=aparc_optional_args,
@@ -750,7 +687,6 @@ def run_single(
             euler_surf_paths=euler_surf_paths,
             cnr_vol_paths=cnr_vol_paths,
             cnr_cols=cnr_cols,
-            container_command_and_args=container_command_and_args,
             sub_colname=sub_colname,
             sub_prefix=sub_prefix,
             verbose=verbose,
@@ -763,7 +699,6 @@ def run_single(
 
 def run_multi(
     sessions_dir_path: Union[str, os.PathLike],
-    container_command_and_args: Optional[list[str]] = None,
     aseg_measures: list[str] = DEFAULT_ASEG_MEASURES,
     aparc_parcellations: list[str] = DEFAULT_APARC_PARCELLATIONS,
     aparc_measures: list[str] = DEFAULT_APARC_MEASURES,
@@ -794,8 +729,6 @@ def run_multi(
         List of parcellations to use for asegstats2table.
     aparc_measures : list[str]
         List of measures to use for asegstats2table.
-    container_command_and_args : Optional[list[str]], optional
-        Passed to run_single.
     aparc_optional_args : Optional[list[str]], optional
         Passed to run_single.
     aseg_optional_args : Optional[list[str]], optional
@@ -838,12 +771,11 @@ def run_multi(
             continue
 
         n_sessions += 1
-        session_id = dpath_session.name.removeprefix(ses_prefix)
+        session_id = _removeprefix(dpath_session.name, ses_prefix)
         print(f"===== {session_id} =====")
 
         dfs_aseg, dfs_aparc, df_qc = run_single(
             subjects_dir_path=dpath_session,
-            container_command_and_args=container_command_and_args,
             aseg_measures=aseg_measures,
             aparc_parcellations=aparc_parcellations,
             aparc_measures=aparc_measures,
@@ -888,7 +820,6 @@ def run(
     output_dir_path: Union[str, os.PathLike],
     mode: str = DEFAULT_MODE,
     with_qc: bool = False,
-    container_command_and_args: Optional[list[str]] = None,
     aseg_measures: list[str] = DEFAULT_ASEG_MEASURES,
     aparc_parcellations: list[str] = DEFAULT_APARC_PARCELLATIONS,
     aparc_measures: list[str] = DEFAULT_APARC_MEASURES,
@@ -908,8 +839,8 @@ def run(
     Optionally extract QC metrics into a separate file.
 
     This extractor uses FreeSurfer commands (asegstats2table, aparcstats2table,
-    mris_euler_number, and mri_cnr), and so requires FreeSurfer installation or
-    a container with FreeSurfer available.
+    mris_euler_number, and mri_cnr), and so requires FreeSurfer to be installed
+    in the environment where it is run.
 
     Parameters
     ----------
@@ -930,14 +861,6 @@ def run(
         Whether or not to compute QC metrics.
     mode : str
         See input_dir_path.
-    container_command_and_args : Optional[list[str]], optional
-        Container command and arguments (including image file), by default None.
-        This needs to contain everything needed to be able to run the
-        FreeSurfer commands, for example ["apptainer", "exec", "--bind",
-        "<INPUT_DIR_PATH>", "<IMAGE_FILE_PATH>"]. Does not need to be specified
-        if running on a system with FreeSurfer installed. If running with Docker, this
-        must contain ["--env", "SUBJECTS_DIR=[[SUBJECTS_DIR]]"] since the subjects
-        directory cannot be set by forwarding environment variables to the container.
     aparc_optional_args : Optional[list[str]], optional
         Optional arguments to pass to aparcstats2table, by default None. Should
         not include --subjects, --tablefile (or -t), --hemo, --measure or --parc
@@ -973,7 +896,6 @@ def run(
             aparc_measures=aparc_measures,
             aseg_optional_args=aseg_optional_args,
             aparc_optional_args=aparc_optional_args,
-            container_command_and_args=container_command_and_args,
             with_qc=with_qc,
             euler_surf_paths=euler_surf_paths,
             cnr_vol_paths=cnr_vol_paths,
@@ -992,7 +914,6 @@ def run(
             aparc_measures=aparc_measures,
             aseg_optional_args=aseg_optional_args,
             aparc_optional_args=aparc_optional_args,
-            container_command_and_args=container_command_and_args,
             with_qc=with_qc,
             euler_surf_paths=euler_surf_paths,
             cnr_vol_paths=cnr_vol_paths,
@@ -1120,21 +1041,6 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
-        "--container",
-        type=str,
-        default="",
-        help=(
-            "Container command and arguments (including image file), as a single "
-            "string. This needs to contain everything needed to be able to run the "
-            'FreeSurfer commands, for example "apptainer exec --bind <INPUT_DIR_PATH> '
-            '<IMAGE_FILE_PATH>". Does not need to be specified if running on a system '
-            "with FreeSurfer installed. IMPORTANT: only the Singularity/Apptainer "
-            "container engine is explicitly supported because it allows for "
-            "forwarding environment variables; this script might work with Docker "
-            f"containers but likely only with --mode {MODE_SINGLE}."
-        ),
-    )
-    parser.add_argument(
         "--aseg-args",
         type=str,
         default="",
@@ -1241,7 +1147,6 @@ if __name__ == "__main__":
         aparc_parcellations=args.aparc_parcellations,
         aparc_measures=args.aparc_measures,
         with_qc=args.with_qc,
-        container_command_and_args=shlex.split(args.container),
         aseg_optional_args=shlex.split(args.aseg_args),
         aparc_optional_args=shlex.split(args.aparc_args),
         euler_surf_paths=args.euler_surf_paths,
